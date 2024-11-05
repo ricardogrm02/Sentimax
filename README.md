@@ -3,8 +3,9 @@
 ■ Nick TODO
 • test image text scraping
 • figure out how to remove stop words
-• figure out how to combine different models together
-• determine which models to use together (currently MNB, SVM)
+• figure out how to combine scikitlearn, tensorflow, and hugging face together
+• determine which models to use together
+• avoid svm, randomforest, sdgc for taking too long
 
 ■ Ricky TODO
 • setup the frontend
