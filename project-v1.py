@@ -23,7 +23,7 @@ if os.path.exists(model_path) and os.path.exists(vectorizer_path):
     print("Model and vectorizer loaded successfully.")
 else:
     # Load data and train model if not already saved
-    file_path = 'final_data_v2 - final_data_v2.csv'
+    file_path = 'filtered_data/combined_dataset.csv'
     data = pd.read_csv(file_path)
     vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)  # Convert text to numerical data
     X = vectorizer.fit_transform(data['content'])
