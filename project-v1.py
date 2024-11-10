@@ -10,6 +10,7 @@ from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import VotingClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report
 
 # Define paths to save the model and vectorizer
 model_path = 'sentimax_ensemble_model.pkl'
@@ -23,7 +24,7 @@ if os.path.exists(model_path) and os.path.exists(vectorizer_path):
     print("Model and vectorizer loaded successfully.")
 else:
     # Load data and train model if not already saved
-    file_path = 'filtered_data/combined_dataset.csv'
+    file_path = 'filtered_data/balanced_dataset.csv'
     data = pd.read_csv(file_path)
     vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)  # Convert text to numerical data
     X = vectorizer.fit_transform(data['content'])
@@ -45,6 +46,9 @@ else:
     
     # Train the ensemble model
     ensemble_model.fit(X_train, y_train)
+
+    y_pred = ensemble_model.predict(X_test)
+    print(classification_report(y_test, y_pred))
 
     # Save the trained model and vectorizer
     joblib.dump(ensemble_model, model_path)
@@ -81,7 +85,7 @@ ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
 ensemble_classes = ensemble_model.classes_
 
 # Get top 5 predicted emotions from the ensemble
-top_5_indices = np.argsort(ensemble_proba[0])[::-1][:5]
+top_5_indices = np.argsort(ensemble_proba[0])[::-1]
 top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
 
 # Output the top 5 emotions
