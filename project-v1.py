@@ -16,15 +16,9 @@ from sklearn.metrics import classification_report
 model_path = 'sentimax_ensemble_model.pkl'
 vectorizer_path = 'tfidf_vectorizer.pkl'
 
-# Check if model and vectorizer are already saved
-if os.path.exists(model_path) and os.path.exists(vectorizer_path):
-    # Load the model and vectorizer if they exist
-    ensemble_model = joblib.load(model_path)
-    vectorizer = joblib.load(vectorizer_path)
-    print("Model and vectorizer loaded successfully.")
-else:
-    # Load data and train model if not already saved
-    file_path = 'filtered_data/balanced_dataset.csv'
+# Function to train and save the model
+def train_and_save_model():
+    file_path = 'new_balanced_data.csv'
     data = pd.read_csv(file_path)
     vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)  # Convert text to numerical data
     X = vectorizer.fit_transform(data['content'])
@@ -54,6 +48,28 @@ else:
     joblib.dump(ensemble_model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
     print("Model and vectorizer trained and saved successfully.")
+    return ensemble_model, vectorizer
+
+# Check if model and vectorizer are already saved
+if os.path.exists(model_path) and os.path.exists(vectorizer_path):
+    user_choice = input("Model and vectorizer already exist. Do you want to:\n1) Use the existing model\n2) Delete and create a new model\nEnter your choice (1 or 2): ")
+    if user_choice == '1':
+        # Load the existing model and vectorizer
+        ensemble_model = joblib.load(model_path)
+        vectorizer = joblib.load(vectorizer_path)
+        print("Existing model and vectorizer loaded successfully.")
+    elif user_choice == '2':
+        # Delete existing model and train a new one
+        os.remove(model_path)
+        os.remove(vectorizer_path)
+        print("Existing model and vectorizer deleted.")
+        ensemble_model, vectorizer = train_and_save_model()
+    else:
+        print("Invalid choice. Exiting.")
+        exit()
+else:
+    # Train and save the model if it doesn't exist
+    ensemble_model, vectorizer = train_and_save_model()
 
 # Function to read text from an image using EasyOCR
 def read_image(userInput):

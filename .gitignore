@@ -2,3 +2,4 @@ sentimax_ensemble_model.pkl
 tfidf_vectorizer.pkl
 filtered_data
 edit_data.py
+emotions
