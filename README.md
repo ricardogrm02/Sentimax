@@ -2,7 +2,7 @@
 
 ■ Nick TODO
 • test image text scraping
-• figure out how to remove stop words
+• DO NOT TOUCH THE JOY SENTIMENT DATA, IT WILL REDUCE ACCURACY
 • figure out how to combine scikitlearn, tensorflow, and hugging face together
 • determine which models to use together
 • avoid svm, randomforest, sdgc for taking too long
