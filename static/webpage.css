@@ -144,6 +144,7 @@ p{
     overflow: auto;
     transition-duration: 0.5s;
     transition: 0.3s ease;
+    margin-top: 15px;
 }
 
 .image_input h1 {
