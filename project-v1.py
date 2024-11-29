@@ -4,6 +4,12 @@ import numpy as np
 import easyocr
 import joblib
 
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense, Dropout
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
@@ -11,15 +17,29 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
+from sklearn.metrics import f1_score
 from sklearn.preprocessing import LabelEncoder
-
-# Import SMOTE for handling class imbalance
-from imblearn.over_sampling import SMOTE
+from sklearn.svm import SVC
+from sklearn.linear_model import SGDClassifier
 
 # Define paths to save the model, vectorizer, and label encoder
 model_path = 'sentimax_ensemble_model.pkl'
 vectorizer_path = 'tfidf_vectorizer.pkl'
 label_encoder_path = 'label_encoder.pkl'
+
+def train_cnn(X_train, y_train, X_test, y_test, vocab_size, max_length, num_classes):
+    embedding_dim = 50
+    model = Sequential([
+        Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=max_length),
+        Conv1D(filters=128, kernel_size=5, activation='relu'),
+        GlobalMaxPooling1D(),
+        Dense(64, activation='relu'),
+        Dropout(0.5),
+        Dense(num_classes, activation='softmax')
+    ])
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=5, batch_size=32, verbose=1)
+    return model
 
 # Function to train and save the model
 def train_and_save_model():
@@ -37,10 +57,6 @@ def train_and_save_model():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Apply SMOTE to handle class imbalance
-    sm = SMOTE(random_state=42)
-    X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
-
     # Initialize models with adjusted hyperparameters
     MNB_Model = MultinomialNB()
     LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
@@ -48,6 +64,8 @@ def train_and_save_model():
     B_Model = BernoulliNB()
     KNN_Model = KNeighborsClassifier(n_neighbors=3)
     RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)
+    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
+    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
 
     # Create ensemble model
     ensemble_model = VotingClassifier(
@@ -57,13 +75,15 @@ def train_and_save_model():
             ('c', C_Model),
             ('b', B_Model),
             ('knn', KNN_Model),
-            ('rf', RF_Model)
+            ('rf', RF_Model),
+            ('svm', SVM_Model),
+            ('sgdc', SGDC_Model)
         ],
         voting='soft'
     )
     
     # Train the ensemble model on resampled data
-    ensemble_model.fit(X_train_res, y_train_res)
+    ensemble_model.fit(X_train, y_train)
 
     y_pred = ensemble_model.predict(X_test)
     print(classification_report(y_test, y_pred, target_names=le.classes_))
@@ -127,6 +147,6 @@ top_5_indices = np.argsort(ensemble_proba[0])[::-1]
 top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
 
 # Output the top 5 emotions
-print("\nTop 5 Predicted Emotions:")
+print("\nPredicted Emotions:")
 for emotion, probability in top_5_emotions:
     print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")

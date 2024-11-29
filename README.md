@@ -5,7 +5,6 @@
 • DO NOT TOUCH THE JOY SENTIMENT DATA, IT WILL REDUCE ACCURACY
 • figure out how to combine scikitlearn, tensorflow, and hugging face together
 • determine which models to use together
-• avoid svm, randomforest, sdgc for taking too long
 • look at the f1-score and if the score value is low, consider providing more examples to get that number up
     - the higher the f1-score, the better
 • use the following code to check the f1-score and such
@@ -14,7 +13,6 @@
     print(classification_report(y_test, y_pred))
     ```
 • add slang, brainrot, memes, and emojis to dataset
-• trying to use simpler classifiers 
 • try new combos after figuring out how to bring in LLAMA3 and BERT
 
 ■ Ricky TODO
