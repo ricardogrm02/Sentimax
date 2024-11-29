@@ -4,12 +4,6 @@ import numpy as np
 import easyocr
 import joblib
 
-from tensorflow import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense, Dropout
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
@@ -17,7 +11,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
-from sklearn.metrics import f1_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
@@ -27,22 +20,8 @@ model_path = 'sentimax_ensemble_model.pkl'
 vectorizer_path = 'tfidf_vectorizer.pkl'
 label_encoder_path = 'label_encoder.pkl'
 
-def train_cnn(X_train, y_train, X_test, y_test, vocab_size, max_length, num_classes):
-    embedding_dim = 50
-    model = Sequential([
-        Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=max_length),
-        Conv1D(filters=128, kernel_size=5, activation='relu'),
-        GlobalMaxPooling1D(),
-        Dense(64, activation='relu'),
-        Dropout(0.5),
-        Dense(num_classes, activation='softmax')
-    ])
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=5, batch_size=32, verbose=1)
-    return model
-
 # Function to train and save the model
-def train_and_save_model():
+def train_ensemble():
     # file_path = 'new_balanced_data.csv'
     file_path = 'n.csv'
     data = pd.read_csv(file_path)
@@ -95,29 +74,6 @@ def train_and_save_model():
     print("Model, vectorizer, and label encoder trained and saved successfully.")
     return ensemble_model, vectorizer, le
 
-# Check if model, vectorizer, and label encoder are already saved
-if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
-    user_choice = input("Model, vectorizer, and label encoder already exist. Do you want to:\n1) Use the existing model\n2) Delete and create a new model\nEnter your choice (1 or 2): ")
-    if user_choice == '1':
-        # Load the existing model, vectorizer, and label encoder
-        ensemble_model = joblib.load(model_path)
-        vectorizer = joblib.load(vectorizer_path)
-        le = joblib.load(label_encoder_path)
-        print("Existing model, vectorizer, and label encoder loaded successfully.")
-    elif user_choice == '2':
-        # Delete existing model and train a new one
-        os.remove(model_path)
-        os.remove(vectorizer_path)
-        os.remove(label_encoder_path)
-        print("Existing model, vectorizer, and label encoder deleted.")
-        ensemble_model, vectorizer, le = train_and_save_model()
-    else:
-        print("Invalid choice. Exiting.")
-        exit()
-else:
-    # Train and save the model if it doesn't exist
-    ensemble_model, vectorizer, le = train_and_save_model()
-
 # Function to read text from an image using EasyOCR
 def read_image(userInput):
     reader = easyocr.Reader(['en'])
@@ -126,27 +82,50 @@ def read_image(userInput):
     concatenated_text = " ".join(result)
     return concatenated_text
 
-# Main function for user input
-mode = int(input("Please Select a method:\n1) Insert Text\n2) Insert Image\nEnter your choice: "))
-if mode == 1:
-    userInput = input("Please input text: ")
-elif mode == 2:
-    userInput = read_image(input("What is the name of the image file: "))
+if __name__ == "__main__":
+    # Check if model, vectorizer, and label encoder are already saved
+    if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
+        user_choice = input("Model, vectorizer, and label encoder already exist. Do you want to:\n1) Use the existing model\n2) Delete and create a new model\nEnter your choice (1 or 2): ")
+        if user_choice == '1':
+            # Load the existing model, vectorizer, and label encoder
+            ensemble_model = joblib.load(model_path)
+            vectorizer = joblib.load(vectorizer_path)
+            le = joblib.load(label_encoder_path)
+            print("Existing model, vectorizer, and label encoder loaded successfully.")
+        elif user_choice == '2':
+            # Delete existing model and train a new one
+            os.remove(model_path)
+            os.remove(vectorizer_path)
+            os.remove(label_encoder_path)
+            print("Existing model, vectorizer, and label encoder deleted.")
+            ensemble_model, vectorizer, le = train_ensemble()
+        else:
+            print("Invalid choice. Exiting.")
+            exit()
+    else:
+        # Train and save the model if it doesn't exist
+        ensemble_model, vectorizer, le = train_ensemble()
 
-# Transform the new input using the loaded vectorizer
-new_text_transformed = vectorizer.transform([userInput])
+    mode = int(input("Please Select a method:\n1) Insert Text\n2) Insert Image\nEnter your choice: "))
+    if mode == 1:
+        userInput = input("Please input text: ")
+    elif mode == 2:
+        userInput = read_image(input("What is the name of the image file: "))
 
-# Predict sentiment probabilities with the ensemble model
-ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
+    # Transform the new input using the loaded vectorizer
+    new_text_transformed = vectorizer.transform([userInput])
 
-# Retrieve the class labels (decode them)
-ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
+    # Predict sentiment probabilities with the ensemble model
+    ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
 
-# Get top 5 predicted emotions from the ensemble
-top_5_indices = np.argsort(ensemble_proba[0])[::-1]
-top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
+    # Retrieve the class labels (decode them)
+    ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
 
-# Output the top 5 emotions
-print("\nPredicted Emotions:")
-for emotion, probability in top_5_emotions:
-    print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
+    # Get top 5 predicted emotions from the ensemble
+    top_5_indices = np.argsort(ensemble_proba[0])[::-1]
+    top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
+
+    # Output emotions
+    print("\nPredicted Emotions:")
+    for emotion, probability in top_5_emotions:
+        print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")

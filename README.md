@@ -3,6 +3,8 @@
 ■ Nick TODO
 • test image text scraping
 • DO NOT TOUCH THE JOY SENTIMENT DATA, IT WILL REDUCE ACCURACY
+• Don't use CNN or else `Worry` will become a dominant sentiment
+• Combining ML and DL may not work bc CNN and Bi-GRU both dropped the accuracies like crazy
 • figure out how to combine scikitlearn, tensorflow, and hugging face together
 • determine which models to use together
 • look at the f1-score and if the score value is low, consider providing more examples to get that number up
