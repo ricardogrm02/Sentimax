@@ -24,7 +24,6 @@ fix.py
 test.py
 __pycache__
 emoji_data
-emoji_emotions.csv
 emoji_label_encoder.pkl
 emoji_sentimax_ensemble_model.pkl
 emoji_tfidf_vectorizer.pkl
