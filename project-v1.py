@@ -15,35 +15,41 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
 
-# Define paths to save the model, vectorizer, and label encoder
+# Define paths to save the model, vectorizer, and label encoder ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■
 model_path = 'text_ensemble_model.pkl'
 vectorizer_path = 'text_vectorizer.pkl'
 label_encoder_path = 'label_encoder.pkl'
 
-# Function to train and save the model
+# Function to train and save the model ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ 
 def train_ensemble():
-    file_path = 'n.csv'
-    data = pd.read_csv(file_path)
+    data = pd.read_csv('n.csv') # Load the main text dataset
     
-    # Increase max_features to capture more text features
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
-    X = vectorizer.fit_transform(data['content'])
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 10000)  # Turn the text into numerical values for models
+                                                                                # stop_words = 'english' removes stop words
+                                                                                # max_features = 10000 is a 10k word limit based on importance to TfidfVectorizer
+    X = vectorizer.fit_transform(data['content'])                               # fit_transform turns the content into the numerical values for models
+                                                                                # vectorizer allows us to use fit_transform since it is a TfidfVectorizer 
 
-    # Encode labels
-    le = LabelEncoder()
-    y = le.fit_transform(data['sentiment'])
+    le = LabelEncoder()                                                         # Turn labels into numerical values for models
+    y = le.fit_transform(data['sentiment'])                                     # fit_transform turns the content into the numerical values for models
+                                                                                # le allows us to use fit_transform since it is a LabelEncoder 
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)   # X_train is input data for training, y_train is label for training
+                                                                                                # X_test is input for testing, y_test is label for testing
+                                                                                                # X is input data (aka content), y is label (aka sentiment)
+                                                                                                # test_size gives us an 80/20 train to test ratio
+                                                                                                # random_state determines how the data is picked
+                                                                                                # random_state = 42 is a specific rule to have the program pick the same values for both training and test
 
     # Initialize models with adjusted hyperparameters
-    MNB_Model = MultinomialNB()
-    LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
-    C_Model = ComplementNB()
-    B_Model = BernoulliNB()
-    KNN_Model = KNeighborsClassifier(n_neighbors=3)
-    RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)
-    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
-    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
+    MNB_Model = MultinomialNB()                                                                                     # Make Multinomial Naive Bayes → good for counting, like how often words appear in document
+    LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)                            # Make Logistic Regression → predicts a probability of something  happening, like whether a review is + or -
+    C_Model = ComplementNB()                                                                                        # Make Complement Naive Bayes → similar to MNB, but better if categories have more examples than others
+    B_Model = BernoulliNB()                                                                                         # Make Bernoulli Naive Bayes → works best when data is yes/no, true/false, 0/1
+    KNN_Model = KNeighborsClassifier(n_neighbors=3)                                                                 # Make KNN → find things that are similar to each other and make predictions based on that
+    RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)                   # Make Random Forest Classifier → asking forest of decision trees to make group decision; good w/ complex data
+    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)                    # Make Support Vector Model → finds best way to draw line to separate things into categories
+    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)  # Make Stochastic Gradient Descent Classifier → fast and simple method for making predictions, esp w/ large data
 
     # Create ensemble model
     ensemble_model = VotingClassifier(
@@ -73,7 +79,7 @@ def train_ensemble():
     print("Model, vectorizer, and label encoder trained and saved successfully.")
     return ensemble_model, vectorizer, le
 
-# Function to read text from an image using EasyOCR
+# Function to read text from an image using EasyOCR ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■
 def read_image(userInput):
     reader = easyocr.Reader(['en'])
     image_path = userInput + '.JPG'
@@ -81,6 +87,7 @@ def read_image(userInput):
     concatenated_text = " ".join(result)
     return concatenated_text
 
+# Main function of the code ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■
 if __name__ == "__main__":
     # Check if model, vectorizer, and label encoder are already saved
     if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
