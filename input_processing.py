@@ -15,6 +15,8 @@ from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
+from sklearn.linear_model import SGDClassifier
 
 # Import SMOTE for handling class imbalance
 from imblearn.over_sampling import SMOTE
@@ -59,6 +61,8 @@ def train_and_save_model():
     B_Model = BernoulliNB()
     KNN_Model = KNeighborsClassifier(n_neighbors=3)
     RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)
+    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
+    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
 
     # Create ensemble model
     ensemble_model = VotingClassifier(
@@ -68,7 +72,9 @@ def train_and_save_model():
             ('c', C_Model),
             ('b', B_Model),
             ('knn', KNN_Model),
-            ('rf', RF_Model)
+            ('rf', RF_Model),
+            ('svm', SVM_Model),
+            ('sgdc', SGDC_Model)
         ],
         voting='soft'
     )
