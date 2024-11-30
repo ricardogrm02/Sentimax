@@ -17,8 +17,8 @@ def hello():
         status_code = checkValidInput(text_result)
         if status_code == 200:
             print(f'Status Code: {status_code}')
-            user_input, pie_chart = initialize_model(text_result)  # Process the text
-            return render_template("text_results.html", result=user_input, pie_chart = pie_chart)  # Pass result to template
+            user_input, bar_graph = initialize_model(text_result)  # Process the text
+            return render_template("text_results.html", result=user_input, bar_graph = bar_graph)  # Pass result to template
         elif status_code == 403:
             print(f'Status Code: {status_code}')
             return render_template("index.html")
@@ -27,9 +27,8 @@ def hello():
         image_bytes = image.read()
         image_data = BytesIO(image_bytes)
         user_image_path = base64.b64encode(image_data.read()).decode('utf-8')
-        output, pie_chart = initialize_model(image_bytes)
-        return render_template('image_results.html', user_image = user_image_path, pie_chart = pie_chart)
-
+        output, bar_graph = initialize_model(image_bytes)
+        return render_template('image_results.html', user_image = user_image_path, bar_graph = bar_graph)
 
 @app.route('/about.html')
 def about():

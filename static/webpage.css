@@ -218,6 +218,7 @@ p{
     font-weight: bold;
     word-break: break-word;
     word-wrap: break-word;
+    text-align: center;
 }
 
 .text_input textarea {

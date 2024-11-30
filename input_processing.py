@@ -141,33 +141,19 @@ def initialize_model(form_response):
     for emotion, probability in top_5_emotions:
         print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
 
-    #Creating Pie Chart
-    explode = [0.05] * len(ensemble_classes)
-    plt.figure(figsize=(7, 7))
-    plt.pie(ensemble_proba.ravel(), labels=ensemble_classes, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors, explode=explode, labeldistance=1.1, pctdistance=0.9)
-    plt.title('Emotion Probablity Distribution')
-    plt.axis('equal') 
-
-    #Saving the pie chart to a bytes buffer before
-    image_buffer = BytesIO()
-    #Converting the image to jpeg file
-    plt.savefig(image_buffer, format = 'jpeg')
-    image_buffer.seek(0)
-
-    #Turning the bytes buffer to a base64 string to use as src for piechart image in front end
-    encoded_pie_chart = base64.b64encode(image_buffer.getvalue()).decode('utf-8')
-    image_buffer.close()
-
-
-    ''' 
-    In the Event we want to include a last minute bar graph, its created and functional
-    just have to convert it to base 64 string, and include it in the results pages as the src in an <img> tag
-    #Initalizing a new graph
+    # #Creating Pie Chart
+    # explode = [0.05] * len(ensemble_classes)
+    # plt.figure(figsize=(7, 7))
+    # plt.pie(ensemble_proba.ravel(), labels=ensemble_classes, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors, explode=explode, labeldistance=1.1, pctdistance=0.9)
+    # plt.title('Emotion Probablity Distribution')
+    # plt.axis('equal') 
+    
+    #Initalizing and creating a new bar graph
     plt.figure()
     #Limiting the Y Values to range from 0 to 1
     plt.ylim(0, 1)
     #Creating a bar graph from model labels and predicited probablities
-    plt.bar(ensemble_classes, ensemble_proba.ravel(), color='red')
+    bars = plt.bar(ensemble_classes, ensemble_proba.ravel(), color= "#26f7fd", width= 0.65)
     # Rotate the X-axis labels to prevent overlapping, and assigining each label to the bar to the right
     plt.xticks(rotation=45, ha='right') 
     #Setting the different Y values in the graph
@@ -177,10 +163,26 @@ def initialize_model(form_response):
     plt.ylabel('Probability of Emotion')
     plt.title('Probability Distribution Bar Graph')
     #Only Showing to test without pushing to frontend
-    plt.show()
-'''
+    # plt.show()
+
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2 + 0.02, yval, f'{yval:.2f}', ha='center', va='bottom', fontsize=8)
+        
+    plt.tight_layout()
+
+    #Saving the bar graph to a bytes buffer 
+    image_buffer = BytesIO()
+    #Converting the image to jpeg file
+    plt.savefig(image_buffer, format = 'jpeg')
+    image_buffer.seek(0)
+
+    #Turning the bytes buffer to a base64 string to use as src for piechart image in front end
+    encoded_bar_graph = base64.b64encode(image_buffer.getvalue()).decode('utf-8')
+    image_buffer.close()
+
     #Returning the Text from the user, and the encoded pie chart
-    return userInput, encoded_pie_chart
+    return userInput, encoded_bar_graph
 
 
 
