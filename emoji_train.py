@@ -16,26 +16,40 @@ from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
 
 # Define paths to save the model, vectorizer, and label encoder
-model_path = 'sentimax_ensemble_model.pkl'
-vectorizer_path = 'tfidf_vectorizer.pkl'
+model_path = 'emoji_sentimax_ensemble_model.pkl'
+vectorizer_path = 'emoji_tfidf_vectorizer.pkl'
 label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
 def train_ensemble():
-    file_path = 'n.csv'
+    # Load the emoji dataset
+    file_path = "emoji_emotions.csv"
     data = pd.read_csv(file_path)
     
-    # Increase max_features to capture more text features
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
+    # Check and clean the dataset
+    print(f"Number of missing entries in 'content': {data['content'].isnull().sum()}")
+    print(data.head())  # Check the first few rows
+    data = data.dropna(subset=['content'])  # Remove rows with missing content
+    data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
+
+    # Initialize a vectorizer with emoji-friendly tokenization
+    vectorizer = TfidfVectorizer(
+        max_features=10000,
+        token_pattern=r"(?u)(?:\w+|\S)",  # Include emojis as valid tokens
+        stop_words=None  # Avoid removing tokens
+    )
+    
+    # Vectorize the 'content' column
     X = vectorizer.fit_transform(data['content'])
 
-    # Encode labels
+    # Encode sentiment labels
     le = LabelEncoder()
     y = le.fit_transform(data['sentiment'])
 
+    # Split the dataset into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize models with adjusted hyperparameters
+    # Initialize models with hyperparameters
     MNB_Model = MultinomialNB()
     LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
     C_Model = ComplementNB()
@@ -45,7 +59,7 @@ def train_ensemble():
     SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
     SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
 
-    # Create ensemble model
+    # Create an ensemble model
     ensemble_model = VotingClassifier(
         estimators=[
             ('nb', MNB_Model),
@@ -60,10 +74,12 @@ def train_ensemble():
         voting='soft'
     )
     
-    # Train the ensemble model on resampled data
+    # Train the ensemble model
     ensemble_model.fit(X_train, y_train)
 
+    # Evaluate the model
     y_pred = ensemble_model.predict(X_test)
+    print("\nModel Performance:")
     print(classification_report(y_test, y_pred, target_names=le.classes_))
 
     # Save the trained model, vectorizer, and label encoder
@@ -72,6 +88,7 @@ def train_ensemble():
     joblib.dump(le, label_encoder_path)
     print("Model, vectorizer, and label encoder trained and saved successfully.")
     return ensemble_model, vectorizer, le
+
 
 # Function to read text from an image using EasyOCR
 def read_image(userInput):
