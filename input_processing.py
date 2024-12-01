@@ -6,6 +6,7 @@ import easyocr
 import joblib
 from io import BytesIO
 import base64
+from combine import analyze_sentiment
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -22,8 +23,17 @@ from sklearn.linear_model import SGDClassifier
 from imblearn.over_sampling import SMOTE
 
 # Define paths to save the model, vectorizer, and label encoder
-model_path = 'sentimax_ensemble_model.pkl'
-vectorizer_path = 'tfidf_vectorizer.pkl'
+text_model_path = 'text_ensemble_model.pkl'
+text_vectorizer_path = 'text_vectorizer.pkl'
+
+#Define slang model paths
+slang_model_path = "brainrot_slang_ensemble_model.pkl"
+slang_vectorizer_path = 'brainrot_slang_vectorizer.pkl'
+
+#Define emoji model paths
+emoji_model_path = "emoji_ensemble_model.pkl"
+emoji_vectorizer_path = "emoji_vectorizer.pkl"
+
 label_encoder_path = 'label_encoder.pkl'
 
 
@@ -34,8 +44,8 @@ def checkValidInput(form_response):
     elif form_response is None or len(form_response) == 0:
         return 403
 
-# Function to train and save the model
-def train_and_save_model():
+# Function to train and save the text model
+def train_and_save_text_model():
     # file_path = 'new_balanced_data.csv'
     file_path = 'n.csv'
     data = pd.read_csv(file_path)
@@ -87,10 +97,146 @@ def train_and_save_model():
     print(classification_report(y_test, y_pred, target_names=le.classes_))
 
     # Save the trained model, vectorizer, and label encoder
-    joblib.dump(ensemble_model, model_path)
-    joblib.dump(vectorizer, vectorizer_path)
+    joblib.dump(ensemble_model, text_model_path)
+    joblib.dump(vectorizer, text_vectorizer_path)
     joblib.dump(le, label_encoder_path)
-    print("Model, vectorizer, and label encoder trained and saved successfully.")
+    print("Text model, text vectorizer, and label encoder trained and saved successfully.")
+    return ensemble_model, vectorizer, le
+
+# Function to train and save the model
+def train_and_save_slang_model():
+    file_path = "slang_brainrot_unique_emotions.csv"
+    data = pd.read_csv(file_path)
+    
+    # Check and clean the dataset
+    print(f"Number of missing entries in 'content': {data['content'].isnull().sum()}")
+    print(data.head())  # Check the first few rows
+    data = data.dropna(subset=['content'])  # Remove rows with missing content
+    data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
+
+    # Initialize a vectorizer with emoji-friendly tokenization
+    vectorizer = TfidfVectorizer(
+        max_features=10000,
+        token_pattern=r"(?u)(?:\w+|\S)",  # Include emojis as valid tokens
+        stop_words=None  # Avoid removing tokens
+    )
+
+    # Increase max_features to capture more text features
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
+
+
+    X = vectorizer.fit_transform(data['content'])
+
+    # Encode labels
+    le = LabelEncoder()
+    y = le.fit_transform(data['sentiment'])
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+    # Initialize models with adjusted hyperparameters
+    MNB_Model = MultinomialNB()
+    LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
+    C_Model = ComplementNB()
+    B_Model = BernoulliNB()
+    KNN_Model = KNeighborsClassifier(n_neighbors=3)
+    RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)
+    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
+    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
+
+    # Create ensemble model
+    ensemble_model = VotingClassifier(
+        estimators=[
+            ('nb', MNB_Model),
+            ('lr', LR_Model),
+            ('c', C_Model),
+            ('b', B_Model),
+            ('knn', KNN_Model),
+            ('rf', RF_Model),
+            ('svm', SVM_Model),
+            ('sgdc', SGDC_Model)
+        ],
+        voting='soft'
+    )
+    
+    # Train the ensemble model on resampled data
+    ensemble_model.fit(X_train_res, y_train_res)
+
+    y_pred = ensemble_model.predict(X_test)
+    #Printing Out the Classification Report
+    print(classification_report(y_test, y_pred, target_names=le.classes_))
+
+    # Save the trained model, vectorizer, and label encoder
+    joblib.dump(ensemble_model, slang_model_path)
+    joblib.dump(vectorizer, slang_vectorizer_path)
+    print("Slang Model and Vectorizer and saved successfully.")
+    return ensemble_model, vectorizer, le
+
+
+# Function to train and save the model
+def train_and_save_emoji_model():
+    file_path = "emoji_emotions.csv"
+    data = pd.read_csv(file_path)
+    
+    # Check and clean the dataset
+    print(f"Number of missing entries in 'content': {data['content'].isnull().sum()}")
+    print(data.head())  # Check the first few rows
+    data = data.dropna(subset=['content'])  # Remove rows with missing content
+    data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
+
+    # Initialize a vectorizer with emoji-friendly tokenization
+    vectorizer = TfidfVectorizer(
+        max_features=10000,
+        token_pattern=r"(?u)(?:\w+|\S)",  # Include emojis as valid tokens
+        stop_words=None  # Avoid removing tokens
+    )
+
+
+    X = vectorizer.fit_transform(data['content'])
+
+    # Encode labels
+    le = LabelEncoder()
+    y = le.fit_transform(data['sentiment'])
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+    # Initialize models with adjusted hyperparameters
+    MNB_Model = MultinomialNB()
+    LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
+    C_Model = ComplementNB()
+    B_Model = BernoulliNB()
+    KNN_Model = KNeighborsClassifier(n_neighbors=3)
+    RF_Model = RandomForestClassifier(class_weight='balanced', random_state=42, n_estimators=100)
+    SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
+    SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
+
+    # Create ensemble model
+    ensemble_model = VotingClassifier(
+        estimators=[
+            ('nb', MNB_Model),
+            ('lr', LR_Model),
+            ('c', C_Model),
+            ('b', B_Model),
+            ('knn', KNN_Model),
+            ('rf', RF_Model),
+            ('svm', SVM_Model),
+            ('sgdc', SGDC_Model)
+        ],
+        voting='soft'
+    )
+    
+    # Train the ensemble model on resampled data
+    ensemble_model.fit(X_train_res, y_train_res)
+
+    y_pred = ensemble_model.predict(X_test)
+    #Printing Out the Classification Report
+    print(classification_report(y_test, y_pred, target_names=le.classes_))
+
+    # Save the trained model, vectorizer, and label encoder
+    joblib.dump(ensemble_model, emoji_model_path)
+    joblib.dump(vectorizer, emoji_vectorizer_path)
+    print("Emoji model, and emoji vectorizer trained and saved successfully.")
     return ensemble_model, vectorizer, le
 
 # Function to read text from an image using EasyOCR
@@ -107,15 +253,37 @@ def read_image(image_bytes):
 
 # Check if model, vectorizer, and label encoder are already saved
 def initialize_model(form_response): 
-    if not os.path.exists(model_path) and not os.path.exists(vectorizer_path) and not os.path.exists(label_encoder_path):
-      ensemble_model, vectorizer, le = train_and_save_model()
+    if not os.path.exists(text_model_path) and not os.path.exists(text_vectorizer_path):
+      ensemble_model, vectorizer, le = train_and_save_text_model()
+    
+    if os.path.exists(text_model_path) and os.path.exists(text_vectorizer_path):
+        # Load the existing model, vectorizer, and label encoder
+        ensemble_model = joblib.load(text_model_path)
+        vectorizer = joblib.load(text_vectorizer_path)
+        le = joblib.load(label_encoder_path)
+        print("Exsting TEXT model, vectorizer, and label encoder loaded successfully.")
 
-    if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
-            # Load the existing model, vectorizer, and label encoder
-            ensemble_model = joblib.load(model_path)
-            vectorizer = joblib.load(vectorizer_path)
-            le = joblib.load(label_encoder_path)
-            print("Exsting model, vectorizer, and label encoder loaded successfully.")
+
+    if not os.path.exists(slang_model_path) and not os.path.exists(slang_vectorizer_path):
+      slang_model, slang_vectorizer = train_and_save_slang_model()
+    
+    if os.path.exists(slang_model_path) and os.path.exists(slang_model_path):
+        # Load the existing model, vectorizer, and label encoder
+        slang_model = joblib.load(slang_model_path)
+        slang_vectorizer = joblib.load(slang_vectorizer_path)
+        print("Exsting SLANG model, vectorizer, and label encoder loaded successfully.")
+
+
+    if not os.path.exists(emoji_model_path) and not os.path.exists(emoji_vectorizer_path):
+        emoji_model, emoji_vectorizer = train_and_save_emoji_model()
+
+    if os.path.exists(emoji_model_path) and os.path.exists(emoji_vectorizer_path):
+        # Load the existing model, vectorizer, and label encoder
+        emoji_model = joblib.load(emoji_model_path)
+        emoji_vectorizer = joblib.load(emoji_vectorizer_path)
+        print("Exsting EMOJI model, vectorizer, and label encoder loaded successfully.")
+
+
 
     # Main function for user input
     # if mode == 1:
@@ -129,23 +297,32 @@ def initialize_model(form_response):
     elif isinstance(form_response, bytes):
         userInput = read_image(form_response)
 
-    # Transform the new input using the loaded vectorizer
-    new_text_transformed = vectorizer.transform([userInput])
+    final_sentiment, sorted_sentiments = analyze_sentiment(userInput, vectorizer, ensemble_model, emoji_vectorizer, emoji_model, slang_vectorizer, slang_model, le)
+    print(sorted_sentiments)
 
-    # Predict sentiment probabilities with the ensemble model
-    ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
+    bar_graph_labels = [sentiment for sentiment, _ in sorted_sentiments]
+    bar_graph_values = [prob for _, prob in sorted_sentiments]
 
-    # Retrieve the class labels (decode them)
-    ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
+    print(bar_graph_labels)
+    print(bar_graph_values)
 
-    # Get top 5 predicted emotions from the ensemble
-    top_5_indices = np.argsort(ensemble_proba[0])[::-1]
-    top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
+    # # Transform the new input using the loaded vectorizer
+    # new_text_transformed = vectorizer.transform([userInput])
+
+    # # Predict sentiment probabilities with the ensemble model
+    # ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
+
+    # # Retrieve the class labels (decode them)
+    # ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
+
+    # # Get top 5 predicted emotions from the ensemble
+    # top_5_indices = np.argsort(ensemble_proba[0])[::-1]
+    # top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
 
     # Output the top 5 emotions
-    print("\nTop 5 Predicted Emotions:")
-    for emotion, probability in top_5_emotions:
-        print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
+    # print("\nTop 5 Predicted Emotions:")
+    # for emotion, probability in top_5_emotions:
+    #     print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
 
     # #Creating Pie Chart
     # explode = [0.05] * len(ensemble_classes)
@@ -159,7 +336,7 @@ def initialize_model(form_response):
     #Limiting the Y Values to range from 0 to 1
     plt.ylim(0, 1)
     #Creating a bar graph from model labels and predicited probablities
-    bars = plt.bar(ensemble_classes, ensemble_proba.ravel(), color= "#26f7fd", width= 0.65)
+    bars = plt.bar(bar_graph_labels, bar_graph_values, color= "#26f7fd", width= 0.65)
     # Rotate the X-axis labels to prevent overlapping, and assigining each label to the bar to the right
     plt.xticks(rotation=45, ha='right') 
     #Setting the different Y values in the graph
