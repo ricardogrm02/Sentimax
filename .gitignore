@@ -1,5 +1,11 @@
 sentimax_ensemble_model.pkl
 tfidf_vectorizer.pkl
+brainrot_slang_ensemble_model.pkl
+brainrot_slang_vectorizer.pkl
+emoji_ensemble_model.pkl
+emoji_vectorizer.pkl
+text_ensemble_model.pkl
+text_vectorizer.pkl
 filtered_data
 edit_data.py
 emotions
