@@ -41,7 +41,6 @@ def train_ensemble():
                                                                                                 # random_state determines how the data is picked
                                                                                                 # random_state = 42 is a specific rule to have the program pick the same values for both training and test
 
-    # Initialize models with adjusted hyperparameters
     MNB_Model = MultinomialNB()                                                                                     # Make Multinomial Naive Bayes → good for counting, like how often words appear in document
     LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)                            # Make Logistic Regression → predicts a probability of something  happening, like whether a review is + or -
     C_Model = ComplementNB()                                                                                        # Make Complement Naive Bayes → similar to MNB, but better if categories have more examples than others
