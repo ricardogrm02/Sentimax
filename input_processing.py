@@ -32,7 +32,7 @@ slang_vectorizer_path = 'brainrot_slang_vectorizer.pkl'
 
 #Define emoji model paths
 emoji_model_path = "emoji_ensemble_model.pkl"
-emoji_vectorizer_path = "emoji_vectorizer.pkl"
+emoji_vectorizer_path = 'emoji_vectorizer.pkl'
 
 label_encoder_path = 'label_encoder.pkl'
 

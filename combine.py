@@ -7,13 +7,13 @@ from text_train_from_project_v1 import train_ensemble as text_model_setup
 from emoji_train import train_ensemble as emoji_model_setup
 from brainrot_slang_train import train_ensemble as slang_model_setup
 
-if not os.path.exists("text_ensemble_model.pkl") and not os.path.exists("text_vectorizer.pk1"):
+if not os.path.exists("text_ensemble_model.pkl") or not os.path.exists("text_vectorizer.pk1"):
     text_model_setup()
 
-if not os.path.exists("emoji_ensemble_model.pkl") and not os.path.exists("emoji_vectorizer.pk1"):
+if not os.path.exists("emoji_ensemble_model.pkl") or not os.path.exists('emoji_vectorizer.pkl'):
     emoji_model_setup()
 
-if not os.path.exists("brainrot_slang_ensemble_model.pkl") and not os.path.exists("brainrot_slang_vectorizer.pk1"):
+if not os.path.exists("brainrot_slang_ensemble_model.pkl") or not os.path.exists("brainrot_slang_vectorizer.pk1"):
     slang_model_setup()
 
 # Load trained models and vectorizers
