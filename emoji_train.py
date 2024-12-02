@@ -23,7 +23,7 @@ label_encoder_path = 'label_encoder.pkl'
 # Function to train and save the model
 def train_ensemble():
     # Load the emoji dataset
-    file_path = "emoji_emotions.csv"
+    file_path = "new_emoji_emotions.csv"
     data = pd.read_csv(file_path)
     
     # Check and clean the dataset
