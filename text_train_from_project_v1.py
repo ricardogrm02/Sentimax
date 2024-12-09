@@ -16,8 +16,8 @@ from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
 
 # Define paths to save the model, vectorizer, and label encoder
-model_path = 'sentimax_ensemble_model.pkl'
-vectorizer_path = 'tfidf_vectorizer.pkl'
+model_path = 'text_ensemble_model.pkl'
+vectorizer_path = 'text_vectorizer.pkl'
 label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
