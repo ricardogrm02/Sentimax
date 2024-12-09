@@ -22,13 +22,8 @@ label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
 def train_ensemble():
-    # Load the emoji dataset
-    file_path = "slang_brainrot_unique_emotions.csv"
-    data = pd.read_csv(file_path)
-    
-    # Check and clean the dataset
-    print(f"Number of missing entries in 'content': {data['content'].isnull().sum()}")
-    print(data.head())  # Check the first few rows
+    # Load the slang datase
+    data = pd.read_csv("slang_brainrot_unique_emotions.csv")
     data = data.dropna(subset=['content'])  # Remove rows with missing content
     data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
 
