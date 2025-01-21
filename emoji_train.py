@@ -23,7 +23,7 @@ label_encoder_path = 'label_encoder.pkl'
 # Function to train and save the model
 def train_ensemble():
     # Load the emoji dataset
-    data = pd.read_csv("new_emoji_emotions.csv")
+    data = pd.read_csv("emoji_train_data.csv")
     data = data.dropna(subset=['content'])  # Remove rows with missing content
     data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
 
