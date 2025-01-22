@@ -1,0 +1,17 @@
+.sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+    z-index: 1000;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .footer-content p {
+    margin: 0;
+  }
+  
