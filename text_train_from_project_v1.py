@@ -23,7 +23,7 @@ label_encoder_path = 'label_encoder.pkl'
 # Function to train and save the model
 def train_ensemble():
     # file_path = 'new_balanced_data.csv'
-    file_path = 'n.csv'
+    file_path = 'text_train_data.csv'
     data = pd.read_csv(file_path)
     
     # Increase max_features to capture more text features
