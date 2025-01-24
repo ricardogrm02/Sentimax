@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 
 function Model(props) {
-  const { scene } = useGLTF('react-vite-app/public/Blu - Animated.glb'); // Path to the model
+  const { scene } = useGLTF('/Blu - Animated.glb'); // Correct path for Vite's public folder
   return <primitive object={scene} {...props} />;
 }
 

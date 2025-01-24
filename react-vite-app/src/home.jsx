@@ -1,41 +1,30 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import React, { useState } from 'react';
 import './home.css';
 import ThreeDModel from './components/ThreeDModel'; // Import the 3D model component
+import SideButtons from './sidebutton.jsx';
+import RightBox from './rightbox.jsx';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [activeButton, setActiveButton] = useState(1); // Track which button is active
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite +++ React</h1>
-      <h1>I LOVE JOE BIDEN</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div>
+      {/* Background Video */}
+      <video
+        className="background-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source src="/anime-girl-watching-sunset-by-cherry-tree-moewalls-com.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
 
-      {/* 3D Model Display */}
-      <div style={{ width: '100%', height: '500px', marginTop: '50px' }}>
-        <ThreeDModel />
-      </div>
-    </>
+      {/* Main Content */}
+      <SideButtons setActiveButton={setActiveButton} />
+      <RightBox activeButton={activeButton} />
+    </div>
   );
 }
 

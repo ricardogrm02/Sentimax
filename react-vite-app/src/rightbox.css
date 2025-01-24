@@ -1,0 +1,93 @@
+/* Container box for the right side */
+.right-box {
+    position: fixed;
+    top: 50%; /* Aligns with the middle of the screen */
+    transform: translateY(-50%); /* Centers it vertically */
+    right: 1rem; /* Offset from the right edge */
+    width: 300px;
+    height: 400px; /* Increased height for more content */
+    padding: 1rem;
+    background-color: #1a1a1a; /* Dark background for the box */
+    border: 1px solid #333; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Title styling */
+  .right-box h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+  }
+  
+  /* Dynamic content container */
+  .dynamic-content {
+    width: 100%; /* Ensures it spans the box width */
+    margin-bottom: 1rem;
+    flex-grow: 1; /* Makes the content grow to fill available space */
+    max-height: 100%; /* Ensures it doesn't grow beyond the container */
+    overflow: auto; /* Enables scrolling for long content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Buttons container */
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  /* Buttons styling */
+  .buttons button {
+    flex: 1;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
+    background-color: #212121;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .buttons button:hover {
+    background-color: #414141;
+  }
+  
+  .buttons button:active {
+    background-color: #616161;
+  }
+  
+  /* Text input styling */
+  .text-input {
+    width: 100%;
+    height: 100%; /* Adjusts height to fill the container dynamically */
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    resize: none; /* Prevents resizing */
+    box-sizing: border-box; /* Ensures padding doesn't break dimensions */
+    flex-grow: 1; /* Ensures the text box grows with the dynamic-content container */
+  }
+  
+  /* File input styling */
+  .upload-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 1rem;
+  }
+  
+  .file-input {
+    color: #fff;
+  }
+  

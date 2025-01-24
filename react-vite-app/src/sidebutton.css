@@ -1,0 +1,37 @@
+.side-buttons {
+    position: fixed; /* Keeps the buttons in place on scroll */
+    top: 50%; /* Vertically centers the buttons */
+    left: 1rem; /* Position the buttons slightly away from the left edge */
+    transform: translateY(-50%); /* Adjusts for perfect vertical centering */
+    display: flex;
+    flex-direction: column; /* Arranges buttons vertically */
+    gap: 1rem; /* Adds space between buttons */
+  }
+  
+  .circle-button {
+    width: 50px; /* Set the button's width */
+    height: 50px; /* Set the button's height (makes it circular with equal width/height) */
+    border-radius: 50%; /* Makes the button round */
+    border: none; /* Removes the border */
+    background-color: #212121; /* Dark background color */
+    color: white; /* Text color */
+    font-size: 1rem; /* Font size for the text */
+    font-weight: bold;
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    display: flex;
+    align-items: center; /* Centers the text vertically */
+    justify-content: center; /* Centers the text horizontally */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adds shadow for depth */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
+  }
+  
+  .circle-button:hover {
+    background-color: #414141; /* Slightly lighter on hover */
+    transform: scale(1.1); /* Enlarges the button slightly on hover */
+  }
+  
+  .circle-button:active {
+    transform: scale(1); /* Resets scale on click */
+    background-color: #616161; /* Darker shade on click */
+  }
+  
