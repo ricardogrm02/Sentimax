@@ -65,21 +65,49 @@
     background-color: #616161;
   }
   
-  /* Text input styling */
+  /* Text Input Styling */
   .text-input {
-    width: 100%;
-    height: 100%; /* Adjusts height to fill the container dynamically */
+    width: 100%; /* Full width of the container */
+    height: 250px; /* Slightly increased height */
     padding: 10px;
-    background-color: #333;
-    color: #fff;
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    resize: none; /* Prevents resizing */
-    box-sizing: border-box; /* Ensures padding doesn't break dimensions */
-    flex-grow: 1; /* Ensures the text box grows with the dynamic-content container */
+    background-color: #1a1a1a; /* Match the theme */
+    color: #fff;
+    resize: none; /* Prevent resizing */
+    box-sizing: border-box; /* Ensures padding doesn't affect the size */
   }
   
-  /* File input styling */
+  .text-input-section {
+    display: flex;
+    flex-direction: column; /* Stack textarea and button vertically */
+    gap: 10px; /* Adds spacing between the textarea and button */
+    width: 100%; /* Full width of the container */
+  }
+  
+  .submit-button {
+    width: 100%; /* Full width of the container */
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #212121; /* Match theme */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #414141; /* Slightly lighter on hover */
+  }
+  
+  .submit-button:active {
+    transform: scale(0.95); /* Slight shrink effect */
+  }
+
+  /* File Input Styling */
   .upload-label {
     display: block;
     margin-bottom: 10px;
@@ -90,4 +118,3 @@
   .file-input {
     color: #fff;
   }
-  

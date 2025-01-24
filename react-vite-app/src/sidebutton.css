@@ -9,13 +9,13 @@
   }
   
   .circle-button {
-    width: 50px; /* Set the button's width */
-    height: 50px; /* Set the button's height (makes it circular with equal width/height) */
+    width: 56px; /* Set the button's width */
+    height: 56px; /* Set the button's height (makes it circular with equal width/height) */
     border-radius: 50%; /* Makes the button round */
     border: none; /* Removes the border */
     background-color: #212121; /* Dark background color */
     color: white; /* Text color */
-    font-size: 1rem; /* Font size for the text */
+    font-size: 0.85rem; /* Font size for the text */
     font-weight: bold;
     cursor: pointer; /* Changes cursor to pointer on hover */
     display: flex;
