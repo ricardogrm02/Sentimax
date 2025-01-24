@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './home.css'
+import { useState } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './home.css';
+import ThreeDModel from './components/ThreeDModel'; // Import the 3D model component
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -29,8 +30,13 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+
+      {/* 3D Model Display */}
+      <div style={{ width: '100%', height: '500px', marginTop: '50px' }}>
+        <ThreeDModel />
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
