@@ -16,7 +16,15 @@ const RightBox = ({ activeButton }) => {
       <h2>{titles[activeButton] || "Agent Info"}</h2>
       <div className="dynamic-content">
         {activeButton === 1 && (
-          <p>Kittens are small, fluffy, and absolutely adorable. They love to play and nap all day!</p>
+          <p>
+            Texted based communication like instant messaging, and emails are a convenient and rapid method of communication, but they lacks a human element. 
+            In a typical conversation, there is eye contact, an audible voice, facial expressions and gestures. 
+            Each of these conversational elements are crucial in understanding a person's tone, emotion, and overall message behind the conversation. 
+            Because text based communication lacks these crucial elements, it's often more difficult to understand a persons intended message through a text. 
+            Therefore, we offer Sentimax. Sentimax is an AI powered tool that semantically interprets a provided passage in order to predict the intended emotion behind the text. 
+            By predicting the emotion of a passage, Sentimax will help users better understand the intended message of the sender, 
+            allowing for clearer and more efficient communication.
+          </p>
         )}
         {activeButton === 2 && (
           <div className="text-input-section">

@@ -4,8 +4,8 @@
     top: 50%; /* Aligns with the middle of the screen */
     transform: translateY(-50%); /* Centers it vertically */
     right: 1rem; /* Offset from the right edge */
-    width: 300px;
-    height: 400px; /* Increased height for more content */
+    width: 500px;
+    height: 550px; /* Increased height for more content */
     padding: 1rem;
     background-color: #1a1a1a; /* Dark background for the box */
     border: 1px solid #333; /* Subtle border */
@@ -68,7 +68,7 @@
   /* Text Input Styling */
   .text-input {
     width: 100%; /* Full width of the container */
-    height: 250px; /* Slightly increased height */
+    height: 300px; /* Slightly increased height */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
