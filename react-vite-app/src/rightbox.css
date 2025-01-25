@@ -107,14 +107,45 @@
     transform: scale(0.95); /* Slight shrink effect */
   }
 
-  /* File Input Styling */
-  .upload-label {
-    display: block;
-    margin-bottom: 10px;
-    color: #fff;
-    font-size: 1rem;
-  }
-  
-  .file-input {
-    color: #fff;
-  }
+/* File Input Section */
+.center_image_button {
+  display: flex;
+  flex-direction: column; /* Stack label, input, and button vertically */
+  gap: 10px; /* Add spacing between elements */
+  width: 100%; /* Full width of the container */
+}
+
+.upload-label {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.file-input {
+  color: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #1a1a1a; /* Match the theme */
+}
+
+.submit-button {
+  width: 100%; /* Full width of the container */
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #212121; /* Match theme */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #414141; /* Slightly lighter on hover */
+}
+
+.submit-button:active {
+  transform: scale(0.95); /* Slight shrink effect */
+}

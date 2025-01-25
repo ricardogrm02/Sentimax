@@ -41,6 +41,7 @@ const RightBox = ({ activeButton }) => {
           <div className="center_image_button">
             <label className="upload-label">Upload an image:</label>
             <input type="file" accept="image/*" className="file-input" />
+            <button className="submit-button">Submit</button>
           </div>
         )}
       </div>
