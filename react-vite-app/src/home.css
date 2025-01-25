@@ -59,3 +59,41 @@ body {
   object-fit: cover; /* Ensures the video scales properly without distortion */
   z-index: -1; /* Sends the video to the background */
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height of the viewport */
+  position: relative;
+}
+
+.content-layout {
+  display: flex;
+  flex-direction: row; /* Horizontal layout for the buttons, images, and right box */
+  height: 100%;
+  align-items: center; /* Vertically align all items */
+  justify-content: space-between; /* Spread items across the width */
+  padding: 1rem;
+}
+
+.side-buttons {
+  flex: 0 0 auto; /* Keep the side buttons fixed in size */
+}
+
+.image-container {
+  flex: 1; /* Allow the image container to scale based on available space */
+  display: flex;
+  justify-content: center; /* Center the image horizontally */
+  align-items: center; /* Center the image vertically */
+}
+
+.dynamic-image {
+  max-width: 60%; /* Adjust the image size */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.right-box {
+  flex: 0 0 auto; /* Keep the right box fixed in size */
+}
+
+
