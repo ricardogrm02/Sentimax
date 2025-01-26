@@ -34,3 +34,5 @@ dist-ssr/
 # Exclude static and templates directories (if needed)
 static/
 templates/
+
+*.cpython-312.pyc

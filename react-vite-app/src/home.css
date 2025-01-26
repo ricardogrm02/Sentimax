@@ -88,12 +88,17 @@ body {
 }
 
 .dynamic-image {
-  max-width: 60%; /* Adjust the image size */
-  height: auto; /* Maintain aspect ratio */
+  width: 250px; /* Fixed visible size */
+  height: 350px; /* Fixed visible size */
+  object-fit: cover; /* Ensures the image fills the container while maintaining its aspect ratio */
+  overflow: hidden; /* Ensures any overflowed content is not visible */
+  display: block; /* Ensures no extra spacing if it's inside an inline container */
+  transition: transform 0.3s ease; /* Smooth zoom effect on hover */
+  transform: scale(2.0); /* Zoom into image */
+  margin-bottom: -50%;
+  margin-left: -450%;
 }
 
 .right-box {
   flex: 0 0 auto; /* Keep the right box fixed in size */
 }
-
-

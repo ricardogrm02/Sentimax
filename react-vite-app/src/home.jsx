@@ -11,9 +11,9 @@ function App() {
       case 1:
         return 'Firefly_40_EDIT-Photoroom.png'; // About button
       case 2:
-        return 'Firefly_47-Photoroom.png'; // Check Text button
+        return 'Firefly_47_EDIT-Photoroom.png'; // Check Text button
       case 3:
-        return 'Firefly_44-Photoroom.png'; // Check Image button
+        return 'Firefly_44_EDIT-Photoroom.png'; // Check Image button
       default:
         return null;
     }
