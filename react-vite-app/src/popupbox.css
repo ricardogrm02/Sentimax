@@ -1,0 +1,49 @@
+.popup-box-overlay { /* This is a opaque cover to dim out the main text box */
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(245, 0, 245, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;  */
+  }
+  
+  .popup-box {
+    position: fixed;
+    top: 50%; /* Aligns with the middle of the screen */
+    transform: translateY(-50%); /* Centers it vertically */
+    right: 1rem; /* Offset from the right edge */
+    width: 500px;
+    height: 550px; /* Increased height for more content */
+    padding: 1rem;
+    background-color: #1a1a1a; /* Dark background for the box */
+    border: 1px solid #333; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    right: 105%;
+  }
+  
+  .close-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f44336;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .close-button:hover {
+    background-color: #d32f2f;
+  }
+  
