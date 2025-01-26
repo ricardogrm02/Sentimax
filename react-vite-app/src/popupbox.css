@@ -17,7 +17,7 @@
     top: 50%; /* Aligns with the middle of the screen */
     transform: translateY(-50%); /* Centers it vertically */
     right: 1rem; /* Offset from the right edge */
-    width: 500px;
+    width: 600px;
     height: 550px; /* Increased height for more content */
     padding: 1rem;
     background-color: #1a1a1a; /* Dark background for the box */
