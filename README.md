@@ -27,8 +27,9 @@
 ## How to Use
 1) Make sure the current directory is `Sentimax`
 2) Make sure that all necessary libraries are installed (sklearn, flask, etc)
-3) Navigate to the `user_interface.py` file and run it 
-4) Wait a bit for the project to load
-5) A local website link will be made in the terminal, ctrl+left click it to open the project website
-6) User can use an image with text or just text to check for sentiment (must click submit, pressing enter won't work)
-7) After the results display, you can return to main page via "Try Model" button at the top of the page
+3) Navigate to the `flask_backend.py` file and run it 
+4) Change the current directory to `react-vite-app` 
+5) Type into the terminal `npm run dev`
+6) Open the link that appears in the terminal
+7) Website is now usable
+8) After having the results pop up, make sure to close it before trying a different set of text

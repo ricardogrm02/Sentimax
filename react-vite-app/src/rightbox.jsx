@@ -23,11 +23,11 @@ const RightBox = ({ activeButton }) => {
         },
         body: JSON.stringify({ text: inputText }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-
-        // Format the response for display in the popup
+  
+        // Extract the backend response data
         const finalSentiment = data.final_sentiment;
         const sortedSentiments = data.sorted_sentiments
           .map(
@@ -35,17 +35,18 @@ const RightBox = ({ activeButton }) => {
               `${s.sentiment}: ${(s.probability * 100).toFixed(2)}%`
           )
           .join("\n");
-
+  
+        // Format the message for the PopupBox
         const message = `Final Sentiment: ${finalSentiment}\n\nDetailed Sentiments:\n${sortedSentiments}`;
-        setResponseMessage(message); // Set the response message
-        setShowPopup(true); // Show the popup
+        setResponseMessage(message); // Pass the message to the PopupBox
+        setShowPopup(true); // Display the popup
       } else {
         setResponseMessage(`Error: Unable to fetch sentiment analysis.`);
-        setShowPopup(true); // Show the popup
+        setShowPopup(true); // Display the error in the popup
       }
     } catch (error) {
       setResponseMessage(`Error: ${error.message}`);
-      setShowPopup(true); // Show the popup
+      setShowPopup(true); // Display the error in the popup
     }
   };
 
