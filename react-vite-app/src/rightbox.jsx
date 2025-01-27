@@ -194,10 +194,15 @@ const RightBox = ({ activeButton }) => {
                   alert("Invalid file type. Please upload an image file.");
                   return;
                 }
-                setSelectedImage(file); // Correctly set the valid image in state
+                setSelectedImage(URL.createObjectURL(file)); // Set the image preview URL
                 console.log("Selected image:", file.name); // Debugging
               }}
             />
+            {selectedImage && (
+              <div className="image-preview">
+                <img src={selectedImage} alt="Selected" className="preview-image" />
+              </div>
+            )}
             <button
               className="submit-button"
               onClick={async () => {
@@ -205,7 +210,7 @@ const RightBox = ({ activeButton }) => {
                   alert("Please upload an image before submitting.");
                   return;
                 }
-                console.log("Submitting image:", selectedImage.name); // Debugging
+                console.log("Submitting image:", selectedImage); // Debugging
                 await handleImageSubmit(selectedImage); // Pass the selected image to the function
               }}
             >
