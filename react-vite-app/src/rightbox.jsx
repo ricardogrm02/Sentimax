@@ -27,18 +27,39 @@ const RightBox = ({ activeButton }) => {
       if (response.ok) {
         const data = await response.json();
   
-        // Extract the backend response data
-        const finalSentiment = data.final_sentiment;
-        const sortedSentiments = data.sorted_sentiments
-          .map(
-            (s) =>
-              `${s.sentiment}: ${(s.probability * 100).toFixed(2)}%`
-          )
-          .join("\n");
+        // Parse the backend response to create data for the pie chart
+        const chartData = {
+          labels: data.sorted_sentiments.map((s) => s.sentiment), // Extract sentiment labels
+          datasets: [
+            {
+              data: data.sorted_sentiments.map((s) => s.probability), // Extract probabilities
+              backgroundColor: [
+                "#FFC0CB", // Love → Red
+                "#DC143C", // Angry → Crimson 
+                "#00008B", // Disappointment → Dark Blue
+                "#ADD8E6", // Empty → Light Blue
+                "#FFA500", // Joy → Orange
+                "#3C6307", // Worry → Dark Green
+                "#FFFF00", // Happiness → Yellow
+                "#FF69B4", // Fun → Hot Pink 
+                "#000000", // Fear → Black
+                "#808080", // Shame → Gray
+                "#9F8C76", // Boredom → Dark Beige
+                "#800080", // Surprise → Purple
+                "#9ACD32", // Disgust → Yellow/Green
+                "#FFD700", // Enthusiasm → Gold
+                "#0000FF", // Sadness → Blue
+                "#FFFFFF", // Neutral → White
+                "#C0C0C0", // Relief → Silver
+                "#4B0082"  // Hate → Dark Purple
+              ], 
+            },
+          ],
+        };
   
-        // Format the message for the PopupBox
-        const message = `Final Sentiment: ${finalSentiment}\n\nDetailed Sentiments:\n${sortedSentiments}`;
-        setResponseMessage(message); // Pass the message to the PopupBox
+        // Pass the chart data to the PopupBox as JSON
+        const message = JSON.stringify(chartData); // Pass chart data as JSON string
+        setResponseMessage(message); // Store the response for the PopupBox
         setShowPopup(true); // Display the popup
       } else {
         setResponseMessage(`Error: Unable to fetch sentiment analysis.`);
