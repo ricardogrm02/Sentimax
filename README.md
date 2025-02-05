@@ -2,27 +2,22 @@
 
 ## TODO List
 ■ Nick TODO
-• test image text scraping  
-• DO NOT TOUCH THE JOY SENTIMENT DATA, IT WILL REDUCE ACCURACY  
+• try to fix image text scraping off images w/ no text
 • figure out how to combine scikitlearn, tensorflow, and hugging face together  
-• determine which models to use together  
-• avoid svm, randomforest, sdgc for taking too long  
-• look at the f1-score and if the score value is low, consider providing more examples to get that number up  
+    →bring in LLAMA3, BERT  
+• look at f1-score and if score value is low, consider providing more examples to get that number up  
     - the higher the f1-score, the better  
 • use the following code to check the f1-score and such  
     ```  
     y_pred = ensemble_model.predict(X_test)  
     print(classification_report(y_test, y_pred))  
     ```  
-• add slang, brainrot, memes, and emojis to dataset  
-• trying to use simpler classifiers   
-• try new combos after figuring out how to bring in LLAMA3 and BERT  
-
-■ Ricky TODO  
-• setup the frontend  
-• figure out how to allow the user to insert an image to then scrape it  
-• figure out how to let the user have the choice of typing text in or inserting an image to scrape text off of it  
-• probably is a library that can convert the image to numbers like a tokenizer  
+• make the frontend responsive
+    →tailwind, framer motion, react responsive, react intersection observer, radix ui, chakra ui
+    →if you want full UI control, go with Tailwind CSS.
+    →if you need responsive animations, use Framer Motion
+    →if you want JS-based media queries, try React Responsive
+    →if you need lazy loading, use React Intersection Observer
 
 ## How to Use
 1) Make sure the current directory is `Sentimax`
