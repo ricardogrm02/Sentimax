@@ -95,8 +95,10 @@ body {
   display: block; /* Ensures no extra spacing if it's inside an inline container */
   transition: transform 0.3s ease; /* Smooth zoom effect on hover */
   transform: scale(2.0); /* Zoom into image */
-  margin-bottom: -50%;
+  margin-bottom: -50%; 
   margin-left: -450%;
+  /* margin-bottom: -150px;
+  margin-left: -1250px; */
 }
 
 .right-box {

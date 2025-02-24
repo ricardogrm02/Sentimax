@@ -3,6 +3,8 @@ import './home.css';
 import SideButtons from './sidebutton.jsx';
 import RightBox from './rightbox.jsx';
 
+/*This file is to setup the homepage and its assets*/
+/*This file loads in the interactive rightbox & sidebuttons on the left*/
 function App() {
   const [activeButton, setActiveButton] = useState(1); // Track which button is active
 

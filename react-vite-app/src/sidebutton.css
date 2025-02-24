@@ -1,37 +1,48 @@
 .side-buttons {
-    position: fixed; /* Keeps the buttons in place on scroll */
-    top: 50%; /* Vertically centers the buttons */
-    left: 1rem; /* Position the buttons slightly away from the left edge */
-    transform: translateY(-50%); /* Adjusts for perfect vertical centering */
-    display: flex;
-    flex-direction: column; /* Arranges buttons vertically */
-    gap: 1rem; /* Adds space between buttons */
-  }
-  
-  .circle-button {
-    width: 56px; /* Set the button's width */
-    height: 56px; /* Set the button's height (makes it circular with equal width/height) */
-    border-radius: 50%; /* Makes the button round */
-    border: none; /* Removes the border */
-    background-color: #212121; /* Dark background color */
-    color: white; /* Text color */
-    font-size: 0.85rem; /* Font size for the text */
-    font-weight: bold;
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    display: flex;
-    align-items: center; /* Centers the text vertically */
-    justify-content: center; /* Centers the text horizontally */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adds shadow for depth */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
-  }
-  
-  .circle-button:hover {
-    background-color: #414141; /* Slightly lighter on hover */
-    transform: scale(1.1); /* Enlarges the button slightly on hover */
-  }
-  
-  .circle-button:active {
-    transform: scale(1); /* Resets scale on click */
-    background-color: #616161; /* Darker shade on click */
-  }
-  
+  position: fixed; /* Keeps the buttons in place on scroll */
+  top: 50%; /* Vertically centers the buttons */
+  left: 1rem; /* Position the buttons slightly away from the left edge */
+  transform: translateY(-50%); /* Adjusts for perfect vertical centering */
+  display: flex;
+  flex-direction: column; /* Arranges buttons vertically */
+  gap: 1rem; /* Adds space between buttons */
+}
+
+/* New style for tablet and smaller devices */
+.top-buttons {
+  position: fixed;
+  top: 80px; /* Adjust this value to fit snugly under your header */
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row; /* Arrange buttons in a row */
+  justify-content: center; /* Center them horizontally */
+  gap: 1rem; /* Adds space between buttons */
+}
+
+.circle-button {
+  width: 56px; /* Button width */
+  height: 56px; /* Button height to make it circular */
+  border-radius: 50%;
+  border: none;
+  background-color: #212121;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.circle-button:hover {
+  background-color: #414141;
+  transform: scale(1.1);
+}
+
+.circle-button:active {
+  transform: scale(1);
+  background-color: #616161;
+}
