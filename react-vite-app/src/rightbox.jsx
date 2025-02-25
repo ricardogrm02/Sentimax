@@ -188,12 +188,20 @@ const RightBox = ({ activeButton }) => {
           </div>
         )}
       </div>
-      {showPopup && (
-        <PopupBox
-          message={responseMessage}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
+      {showPopup &&
+        (isTabletOrMobile ? (
+          <div className="popup-below">
+            <PopupBox
+              message={responseMessage}
+              onClose={() => setShowPopup(false)}
+            />
+          </div>
+        ) : (
+          <PopupBox
+            message={responseMessage}
+            onClose={() => setShowPopup(false)}
+          />
+        ))}
     </div>
   );
 };

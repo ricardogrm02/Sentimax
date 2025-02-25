@@ -1,49 +1,80 @@
-.popup-box-overlay { /* This is a opaque cover to dim out the main text box */
-    /* position: fixed;
+/* Desktop popup styles (default, for viewports > 1024px) */
+.popup-box-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.popup-box {
+  position: fixed;
+  top: 50%; /* Aligns with the middle of the screen */
+  transform: translateY(-50%);
+  right: 1rem; /* Offset from the right edge */
+  width: 600px;
+  height: 550px; /* Increased height for more content */
+  padding: 1rem;
+  background-color: #1a1a1a; /* Dark background for the box */
+  border: 1px solid #333; /* Subtle border */
+  border-radius: 10px; /* Rounded corners */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  /* Note: The following 'right' property is part of your original design.
+     If it causes issues on desktop, you might want to adjust it. */
+  right: 105%;
+}
+
+.close-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f44336;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Mobile/tablet popup styles: Only apply when viewport is 1024px or smaller */
+@media (max-width: 1024px) {
+  .popup-box-overlay {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(245, 0, 245, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;  */
+    min-height: 100vh;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    padding: 20px 0;
+    z-index: 10000;
+    overflow-y: auto;  /* Allow the overlay to scroll vertically */
   }
   
   .popup-box {
-    position: fixed;
-    top: 50%; /* Aligns with the middle of the screen */
-    transform: translateY(-50%); /* Centers it vertically */
-    right: 1rem; /* Offset from the right edge */
-    width: 600px;
-    height: 550px; /* Increased height for more content */
-    padding: 1rem;
-    background-color: #1a1a1a; /* Dark background for the box */
-    border: 1px solid #333; /* Subtle border */
-    border-radius: 10px; /* Rounded corners */
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    right: 105%;
+    position: relative;
+    margin: 20px auto;
+    margin-top: -50%;
+    width: 350px !important;         /* Use a smaller width on mobile */
+    height: auto !important;          /* Let height adjust based on content */
+    max-height: calc(100vh - 40px) !important; /* Leave some gap at top/bottom */
+    overflow-y: auto !important;      /* Enable vertical scrolling within the popup */
+    top: auto !important;
+    right: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
-  
-  .close-button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #f44336;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .close-button:hover {
-    background-color: #d32f2f;
-  }
-  
+}
