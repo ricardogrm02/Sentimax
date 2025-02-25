@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import PopupBox from "./popupbox";
 import Tesseract from "tesseract.js";
+import { useMediaQuery } from "react-responsive";
 import "./rightbox.css";
 
+/*This file is to setup the box at the rightside of the page*/
+/*Boxes at the right side of the page depend on the button clicked*/
 const RightBox = ({ activeButton }) => {
-  const [inputText, setInputText] = useState(""); // State to track input text
-  const [showPopup, setShowPopup] = useState(false); // State to toggle popup visibility
-  const [responseMessage, setResponseMessage] = useState(""); // State to store backend response
+  const [inputText, setInputText] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // For viewports 1024px and below, apply smaller styling.
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1024 });
+
+  // Determine which container class to use:
+  // On smaller devices, add both "center-box" and "small-box" classes.
+  const containerClass = isTabletOrMobile ? "center-box small-box" : "right-box";
 
   // Map button numbers to titles
   const titles = {
@@ -20,66 +30,45 @@ const RightBox = ({ activeButton }) => {
     try {
       const response = await fetch("http://localhost:5000/analyze-sentiment", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: inputText }),
       });
   
       if (response.ok) {
         const data = await response.json();
-  
-        // Parse the backend response to create data for the pie chart
         const chartData = {
-          labels: data.sorted_sentiments.map((s) => s.sentiment), // Extract sentiment labels
+          labels: data.sorted_sentiments.map((s) => s.sentiment),
           datasets: [
             {
-              data: data.sorted_sentiments.map((s) => s.probability), // Extract probabilities
+              data: data.sorted_sentiments.map((s) => s.probability),
               backgroundColor: [
-                "#FFC0CB", // Love → Red
-                "#DC143C", // Angry → Crimson 
-                "#00008B", // Disappointment → Dark Blue
-                "#ADD8E6", // Empty → Light Blue
-                "#FFA500", // Joy → Orange
-                "#3C6307", // Worry → Dark Green
-                "#FFFF00", // Happiness → Yellow
-                "#FF69B4", // Fun → Hot Pink 
-                "#000000", // Fear → Black
-                "#808080", // Shame → Gray
-                "#9F8C76", // Boredom → Dark Beige
-                "#800080", // Surprise → Purple
-                "#9ACD32", // Disgust → Yellow/Green
-                "#FFD700", // Enthusiasm → Gold
-                "#0000FF", // Sadness → Blue
-                "#FFFFFF", // Neutral → White
-                "#C0C0C0", // Relief → Silver
-                "#4B0082"  // Hate → Dark Purple
-              ], 
+                "#FFC0CB", "#DC143C", "#00008B", "#ADD8E6", "#FFA500",
+                "#3C6307", "#FFFF00", "#FF69B4", "#000000", "#808080",
+                "#9F8C76", "#800080", "#9ACD32", "#FFD700", "#0000FF",
+                "#FFFFFF", "#C0C0C0", "#4B0082"
+              ],
             },
           ],
         };
-  
-        // Pass the chart data to the PopupBox as JSON
-        const message = JSON.stringify(chartData); // Pass chart data as JSON string
-        setResponseMessage(message); // Store the response for the PopupBox
-        setShowPopup(true); // Display the popup
+        const message = JSON.stringify(chartData);
+        setResponseMessage(message);
+        setShowPopup(true);
       } else {
-        setResponseMessage(`Error: Unable to fetch sentiment analysis.`);
-        setShowPopup(true); // Display the error in the popup
+        setResponseMessage("Error: Unable to fetch sentiment analysis.");
+        setShowPopup(true);
       }
     } catch (error) {
       setResponseMessage(`Error: ${error.message}`);
-      setShowPopup(true); // Display the error in the popup
+      setShowPopup(true);
     }
-  };  
+  };
 
   const handleImageSubmit = async (imageFile) => {
     try {
-      // Extract text from the image using Tesseract.js
       const { data: { text } } = await Tesseract.recognize(
-        imageFile, // The image file
-        "eng", // Language for OCR
-        { logger: (info) => console.log(info) } // Optional progress logger
+        imageFile,
+        "eng",
+        { logger: (info) => console.log(info) }
       );
       
       if (!text || !text.trim()) {
@@ -87,52 +76,31 @@ const RightBox = ({ activeButton }) => {
         return;
       }
   
-      // Send the extracted text to the new backend endpoint for sentiment analysis
       const response = await fetch("http://localhost:5000/analyze-image-sentiment", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text }), // Pass the extracted text
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
       });
   
       if (response.ok) {
         const data = await response.json();
-  
-        // Create chart data for the popup
         const chartData = {
-          labels: data.sorted_sentiments.map((s) => s.sentiment), // Extract sentiment labels
+          labels: data.sorted_sentiments.map((s) => s.sentiment),
           datasets: [
             {
-              data: data.sorted_sentiments.map((s) => s.probability), // Extract probabilities
+              data: data.sorted_sentiments.map((s) => s.probability),
               backgroundColor: [
-                "#FFC0CB", // Love → Red
-                "#DC143C", // Angry → Crimson 
-                "#00008B", // Disappointment → Dark Blue
-                "#ADD8E6", // Empty → Light Blue
-                "#FFA500", // Joy → Orange
-                "#3C6307", // Worry → Dark Green
-                "#FFFF00", // Happiness → Yellow
-                "#FF69B4", // Fun → Hot Pink 
-                "#000000", // Fear → Black
-                "#808080", // Shame → Gray
-                "#9F8C76", // Boredom → Dark Beige
-                "#800080", // Surprise → Purple
-                "#9ACD32", // Disgust → Yellow/Green
-                "#FFD700", // Enthusiasm → Gold
-                "#0000FF", // Sadness → Blue
-                "#FFFFFF", // Neutral → White
-                "#C0C0C0", // Relief → Silver
-                "#4B0082"  // Hate → Dark Purple
-              ], 
+                "#FFC0CB", "#DC143C", "#00008B", "#ADD8E6", "#FFA500",
+                "#3C6307", "#FFFF00", "#FF69B4", "#000000", "#808080",
+                "#9F8C76", "#800080", "#9ACD32", "#FFD700", "#0000FF",
+                "#FFFFFF", "#C0C0C0", "#4B0082"
+              ],
             },
           ],
         };
-  
-        // Display the chart in the popup
         const message = JSON.stringify(chartData);
-        setResponseMessage(message); // Pass the chart data to the popup
-        setShowPopup(true); // Display the popup
+        setResponseMessage(message);
+        setShowPopup(true);
       } else {
         alert("Error: Unable to analyze the image text.");
       }
@@ -142,11 +110,13 @@ const RightBox = ({ activeButton }) => {
   };
 
   return (
-    <div className="right-box">
-      <h2>{titles[activeButton] || "Agent Info"}</h2>
-      <div className="dynamic-content">
+    <div className={containerClass}>
+      <h2 className={isTabletOrMobile ? "small-font" : ""}>
+        {titles[activeButton] || "Agent Info"}
+      </h2>
+      <div className={`dynamic-content ${activeButton === 1 && isTabletOrMobile ? "about-content" : ""}`}>
         {activeButton === 1 && (
-          <p>
+          <p className={isTabletOrMobile ? "small-font" : ""}>
             Texted based communication like instant messaging, and emails are a
             convenient and rapid method of communication, but they lack a human
             element. In a typical conversation, there is eye contact, an audible
@@ -176,7 +146,6 @@ const RightBox = ({ activeButton }) => {
             </button>
           </div>
         )}
-{/* HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH */}
         {activeButton === 3 && (
           <div className="center_image_button">
             <label className="upload-label">Upload an image:</label>
@@ -185,7 +154,7 @@ const RightBox = ({ activeButton }) => {
               accept="image/*"
               className="file-input"
               onChange={(event) => {
-                const file = event.target.files[0]; // Get the uploaded file
+                const file = event.target.files[0];
                 if (!file) {
                   alert("Please select an image file.");
                   return;
@@ -194,8 +163,8 @@ const RightBox = ({ activeButton }) => {
                   alert("Invalid file type. Please upload an image file.");
                   return;
                 }
-                setSelectedImage(URL.createObjectURL(file)); // Set the image preview URL
-                console.log("Selected image:", file.name); // Debugging
+                setSelectedImage(URL.createObjectURL(file));
+                console.log("Selected image:", file.name);
               }}
             />
             {selectedImage && (
@@ -210,21 +179,19 @@ const RightBox = ({ activeButton }) => {
                   alert("Please upload an image before submitting.");
                   return;
                 }
-                console.log("Submitting image:", selectedImage); // Debugging
-                await handleImageSubmit(selectedImage); // Pass the selected image to the function
+                console.log("Submitting image:", selectedImage);
+                await handleImageSubmit(selectedImage);
               }}
             >
               Submit
             </button>
           </div>
         )}
-{/* HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH */}
       </div>
-      {/* Render the PopupBox */}
       {showPopup && (
         <PopupBox
           message={responseMessage}
-          onClose={() => setShowPopup(false)} // Close the popup on button click
+          onClose={() => setShowPopup(false)}
         />
       )}
     </div>
