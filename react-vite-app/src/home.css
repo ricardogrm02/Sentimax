@@ -78,6 +78,8 @@ body {
 
 .side-buttons {
   flex: 0 0 auto; /* Keep the side buttons fixed in size */
+  position: relative; /* Establish a stacking context */
+  z-index: 10;      /* A higher z-index so these appear on top */
 }
 
 .image-container {
