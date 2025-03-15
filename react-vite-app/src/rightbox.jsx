@@ -13,7 +13,7 @@ const RightBox = ({ activeButton }) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   // For viewports 1024px and below, apply smaller styling.
-  const isTabletOrMobile = useMediaQuery({ maxWidth: 1024 });
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1223 });
 
   // Determine which container class to use:
   // On smaller devices, add both "center-box" and "small-box" classes.

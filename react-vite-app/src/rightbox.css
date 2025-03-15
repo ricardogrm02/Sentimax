@@ -16,6 +16,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  transition: width 0.5s ease, height 0.5s ease;
 }
 
 /* Container for tablet and smaller devices */
@@ -36,6 +37,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  transition: width 0.5s ease, height 0.5s ease;
 }
 
 /* New small-box overrides for maxWidth 1024 */
@@ -179,3 +181,67 @@
   border-radius: 5px;
 }
 
+@media (max-width: 400px) {
+  .right-box,
+  .center-box {
+    width: 300px;   /* Example smaller width */
+    height: 400px;  /* Example smaller height */
+    padding: 0.5rem; /* Adjust padding if needed */
+  }
+}
+
+@media (min-width: 401px) and (max-width: 500px) {
+  .center-box.small-box {
+    width: 350px;
+    height: 450px;
+  }
+}
+
+@media (min-width: 501px) and (max-width: 600px) {
+  .center-box.small-box {
+    width: 400px;
+    height: 500px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 700px) {
+  .center-box.small-box {
+    width: 450px;
+    height: 550px;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 800px) {
+  .center-box.small-box {
+    width: 500px;
+    height: 600px;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 900px) {
+  .center-box.small-box {
+    width: 550px;
+    height: 650px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1000px) {
+  .center-box.small-box {
+    width: 600px;
+    height: 650px;
+  }
+}
+
+@media (min-width: 1001px) and (max-width: 1100px) {
+  .center-box.small-box {
+    width: 650px;
+    height: 650px;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1223px) {
+  .center-box.small-box {
+    width: 700px;
+    height: 650px;
+  }
+}

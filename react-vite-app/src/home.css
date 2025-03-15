@@ -85,24 +85,30 @@ body {
 .image-container {
   flex: 1; /* Allow the image container to scale based on available space */
   display: flex;
-  justify-content: center; /* Center the image horizontally */
+  justify-content: flex-start; /* Center the image horizontally */
   align-items: center; /* Center the image vertically */
 }
 
 .dynamic-image {
   width: 250px; /* Fixed visible size */
   height: 350px; /* Fixed visible size */
-  object-fit: cover; /* Ensures the image fills the container while maintaining its aspect ratio */
   overflow: hidden; /* Ensures any overflowed content is not visible */
   display: block; /* Ensures no extra spacing if it's inside an inline container */
-  transition: transform 0.3s ease; /* Smooth zoom effect on hover */
-  transform: scale(2.0); /* Zoom into image */
-  margin-bottom: -50%; 
-  margin-left: -450%;
-  /* margin-bottom: -150px;
-  margin-left: -1250px; */
+  transform: scale(2.2); /* Zoom into image */
+  /* margin-bottom: -50%; 
+  margin-left: -450%; */
+  margin-bottom: -3vw;
+  margin-left: -40vw;
+  transition: width 0.5s ease-in-out; /* Animate changes to width over 0.5s */
 }
 
 .right-box {
   flex: 0 0 auto; /* Keep the right box fixed in size */
+}
+
+@media (max-width: 1223px) {
+  .image-container,
+  .dynamic-image {
+    display: none;
+  }
 }
