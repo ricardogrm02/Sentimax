@@ -3,29 +3,29 @@ import emoji
 import numpy as np
 import os
 from sklearn.metrics import classification_report
-from text_train_from_project_v1 import train_ensemble as text_model_setup
-from emoji_train import train_ensemble as emoji_model_setup
-from brainrot_slang_train import train_ensemble as slang_model_setup
+from ML_text_train import train_ensemble as text_model_setup
+from ML_emoji_train import train_ensemble as emoji_model_setup
+from ML_brainrot_slang_train import train_ensemble as slang_model_setup
 
 # Ensuring that ALL the necessary pkl files for each ensemble model exist before loading them ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■
-if not os.path.exists('text_ensemble_model.pkl') or not os.path.exists('text_vectorizer.pkl'): # Check if either the text_ensemble_model.pkl file or text_vectorizer.pkl file are missing
+if not os.path.exists('ML_text_ensemble_model.pkl') or not os.path.exists('ML_text_vectorizer.pkl'): # Check if either the text_ensemble_model.pkl file or text_vectorizer.pkl file are missing
     text_model_setup() #Create both the text_ensemble_model.pkl file and text_vectorizer.pkl file
 
-if not os.path.exists('emoji_ensemble_model.pkl') or not os.path.exists('emoji_vectorizer.pkl'): # Check if either the emoji_ensemble_model.pkl file or emoji_vectorizer.pkl file are missing
+if not os.path.exists('ML_emoji_ensemble_model.pkl') or not os.path.exists('ML_emoji_vectorizer.pkl'): # Check if either the emoji_ensemble_model.pkl file or emoji_vectorizer.pkl file are missing
     emoji_model_setup() #Create both the emoji_ensemble_model.pkl file and emoji_vectorizer.pkl file
 
-if not os.path.exists('brainrot_slang_ensemble_model.pkl') or not os.path.exists('brainrot_slang_vectorizer.pkl'): # Check if either the brainrot_slang_ensemble_model.pkl file or brainrot_slang_vectorizer.pkl file are missing
+if not os.path.exists('ML_brainrot_slang_ensemble_model.pkl') or not os.path.exists('ML_brainrot_slang_vectorizer.pkl'): # Check if either the brainrot_slang_ensemble_model.pkl file or brainrot_slang_vectorizer.pkl file are missing
     slang_model_setup() #Create both the brainrot_slang_ensemble_model.pkl file and brainrot_slang_vectorizer.pkl file
 
 # Load the existing model, vectorizer, and label encoder ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■
-text_model = joblib.load("text_ensemble_model.pkl")                 # Load the model in the model path into the text_model variable
-text_vectorizer = joblib.load("text_vectorizer.pkl")                # Load the vectorizer in the vectorizer path into the text_vectorizer variable
+text_model = joblib.load("ML_text_ensemble_model.pkl")                 # Load the model in the model path into the text_model variable
+text_vectorizer = joblib.load("ML_text_vectorizer.pkl")                # Load the vectorizer in the vectorizer path into the text_vectorizer variable
 
-emoji_model = joblib.load("emoji_ensemble_model.pkl")               # Load the model in the model path into the emoji_model variable
-emoji_vectorizer = joblib.load("emoji_vectorizer.pkl")              # Load the vectorizer in the vectorizer path into the emoji_vectorizer variable
+emoji_model = joblib.load("ML_emoji_ensemble_model.pkl")               # Load the model in the model path into the emoji_model variable
+emoji_vectorizer = joblib.load("ML_emoji_vectorizer.pkl")              # Load the vectorizer in the vectorizer path into the emoji_vectorizer variable
 
-brainrot_model = joblib.load("brainrot_slang_ensemble_model.pkl")   # Load the model in the model path into the brainrot_model variable
-brainrot_vectorizer = joblib.load("brainrot_slang_vectorizer.pkl")  # Load the vectorizer in the vectorizer path into the brainrot_vectorizer variable
+brainrot_model = joblib.load("ML_brainrot_slang_ensemble_model.pkl")   # Load the model in the model path into the brainrot_model variable
+brainrot_vectorizer = joblib.load("ML_brainrot_slang_vectorizer.pkl")  # Load the vectorizer in the vectorizer path into the brainrot_vectorizer variable
 
 label_encoder = joblib.load("label_encoder.pkl")                    # Load the label encoder in the le path into the label_encoder variable
 

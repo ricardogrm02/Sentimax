@@ -1,5 +1,6 @@
 # Model and vectorizer files
 *.pkl
+*.h5 
 
 # Logs
 logs/
