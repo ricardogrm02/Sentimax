@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './home.css';
 import SideButtons from './sidebutton.jsx';
 import RightBox from './rightbox.jsx';
 
-/*This file is to setup the homepage and its assets*/
-/*This file loads in the interactive rightbox & sidebuttons on the left*/
+/* This file is to setup the homepage and its assets */
+/* This file loads in the interactive rightbox & sidebuttons on the left */
 function App() {
   const [activeButton, setActiveButton] = useState(1); // Track which button is active
+  const audioRef = useRef(null); // Reference for the background music
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.1; // Set volume to 50%
+      audioRef.current.play().catch((err) => {
+        console.log("Autoplay blocked, waiting for user interaction...");
+      });
+    }
+  }, []);
 
   const getImage = () => {
     switch (activeButton) {
@@ -34,6 +44,14 @@ function App() {
         <source src="/anime-girl-watching-sunset-by-cherry-tree-moewalls-com.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+
+      {/* Background Music */}
+      <audio
+        ref={audioRef}
+        src="/Cherry Blossom Festival.mp3"
+        loop
+        preload="auto"
+      />
 
       <div className="content-layout">
         {/* Side Buttons */}
