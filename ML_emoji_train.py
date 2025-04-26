@@ -15,6 +15,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
 
+# 🆕 Import get_polarity_boost from DL_emoji_modifier.py
+from DL_emoji_modifier import get_polarity_boost
+
 # Define paths to save the model, vectorizer, and label encoder
 model_path = 'ML_emoji_ensemble_model.pkl'
 vectorizer_path = 'ML_emoji_vectorizer.pkl'
@@ -31,7 +34,7 @@ def train_ensemble():
     vectorizer = TfidfVectorizer(
         max_features=10000,
         token_pattern=r"(?u)(?:\w+|\S)",  # Include emojis as valid tokens
-        stop_words=None  # Avoid removing tokens
+        stop_words=None
     )
     
     # Vectorize the 'content' column
@@ -84,7 +87,6 @@ def train_ensemble():
     print("Model, vectorizer, and label encoder trained and saved successfully.")
     return ensemble_model, vectorizer, le
 
-
 # Function to read text from an image using EasyOCR
 def read_image(userInput):
     reader = easyocr.Reader(['en'])
@@ -132,11 +134,26 @@ if __name__ == "__main__":
     # Retrieve the class labels (decode them)
     ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
 
-    # Get top 5 predicted emotions from the ensemble
-    top_5_indices = np.argsort(ensemble_proba[0])[::-1]
-    top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
+    # === 🆕 Apply polarity boost ===
+    polarity_boost = get_polarity_boost(userInput)
 
-    # Output emotions
-    print("\nPredicted Emotions:")
-    for emotion, probability in top_5_emotions:
-        print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
+    boosted_emotions = []
+    for i, label in enumerate(ensemble_classes):
+        if label in {"joy", "happiness", "relief", "fun", "love", "surprise", "enthusiasm"}:
+            boosted_proba = ensemble_proba[0][i] * polarity_boost["positive"]
+        elif label in {"neutral", "empty"}:
+            boosted_proba = ensemble_proba[0][i] * polarity_boost["neutral"]
+        elif label in {"anger", "fear", "sadness", "shame", "disgust", "boredom", "hate", "worry", "disappointment"}:
+            boosted_proba = ensemble_proba[0][i] * polarity_boost["negative"]
+        else:
+            boosted_proba = ensemble_proba[0][i]  # If not matched, keep original
+
+        boosted_emotions.append((label, boosted_proba))
+
+    # Sort boosted results
+    boosted_emotions.sort(key=lambda x: x[1], reverse=True)
+
+    # Output
+    print("\nPredicted Emotions (After Boost):")
+    for emotion, probability in boosted_emotions[:5]:
+        print(f"Ensemble Emotion: {emotion}, Boosted Probability: {probability:.4f}")
