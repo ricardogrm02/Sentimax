@@ -10,14 +10,14 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pickle
 
-# Sentiment groupings
+# Sentiment groupings for emoji
 positive = {"joy", "happiness", "relief", "fun", "love", "surprise", "enthusiasm"}
 neutral = {"neutral", "empty"}
 negative = {"anger", "fear", "sadness", "shame", "disgust", "boredom", "hate", "worry", "disappointment"}
 
 # Paths
-model_path = "DL_text_model.h5"
-tokenizer_path = "DL_text_tokenizer.pkl"
+model_path = "DL_emoji_model.h5"
+tokenizer_path = "DL_emoji_tokenizer.pkl"
 label_encoder_path = "DL_label_encoder.pkl"
 
 # Hyperparameters
@@ -27,16 +27,16 @@ embedding_dim = 128
 
 # Load or train model
 if os.path.exists(model_path) and os.path.exists(tokenizer_path) and os.path.exists(label_encoder_path):
-    print("Loading existing DL model and tokenizer...")
+    print("Loading existing DL emoji model and tokenizer...")
     model = tf.keras.models.load_model(model_path)
     with open(tokenizer_path, "rb") as f:
         tokenizer = pickle.load(f)
     with open(label_encoder_path, "rb") as f:
         label_encoder = pickle.load(f)
 else:
-    print("Training new DL model...")
-    # Prepare data
-    df = pd.read_csv("train_text_data.csv")
+    print("Training new DL emoji model...")
+    # Prepare emoji data
+    df = pd.read_csv("train_emoji_data.csv")
 
     def map_to_polarity(label):
         if label in positive:
@@ -72,7 +72,7 @@ else:
         x = Dropout(0.3)(x)
         x = Dense(64, activation="relu")(x)
         output_layer = Dense(num_classes, activation="softmax")(x)
-        return Model(inputs=input_layer, outputs=output_layer, name="BiGRU")
+        return Model(inputs=input_layer, outputs=output_layer, name="BiGRU_Emoji")
 
     model = build_bigru_model()
     model.compile(loss="sparse_categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
@@ -95,7 +95,7 @@ def get_polarity_boost(text):
 
 # Optional standalone usage
 if __name__ == "__main__":
-    user_text = input("Enter text to analyze sentiment polarity: ")
+    user_text = input("Enter emoji text to analyze polarity: ")
     boost_factors = get_polarity_boost(user_text)
     print("\nBoost Factors:")
     print(boost_factors)

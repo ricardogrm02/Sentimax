@@ -23,7 +23,7 @@ label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
 def train_ensemble():
-    file_path = 'text_train_data.csv'
+    file_path = 'train_text_data.csv'
     data = pd.read_csv(file_path)
     
     vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
