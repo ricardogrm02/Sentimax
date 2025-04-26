@@ -14,8 +14,6 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
-
-# 🆕 Import get_polarity_boost from DL_emoji_modifier.py
 from DL_emoji_modifier import get_polarity_boost
 
 # Define paths to save the model, vectorizer, and label encoder
@@ -27,13 +25,13 @@ label_encoder_path = 'ML_label_encoder.pkl'
 def train_ensemble():
     # Load the emoji dataset
     data = pd.read_csv("train_emoji_data.csv")
-    data = data.dropna(subset=['content'])  # Remove rows with missing content
+    data = data.dropna(subset=['content'])          # Remove rows with missing content
     data = data[data['content'].str.strip() != '']  # Remove rows with empty strings
 
     # Initialize a vectorizer with emoji-friendly tokenization
     vectorizer = TfidfVectorizer(
         max_features=10000,
-        token_pattern=r"(?u)(?:\w+|\S)",  # Include emojis as valid tokens
+        token_pattern=r"(?u)(?:\w+|\S)",            # Include emojis as valid tokens
         stop_words=None
     )
     
@@ -134,7 +132,7 @@ if __name__ == "__main__":
     # Retrieve the class labels (decode them)
     ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
 
-    # === 🆕 Apply polarity boost ===
+    # DL booster function
     polarity_boost = get_polarity_boost(userInput)
 
     boosted_emotions = []
@@ -150,10 +148,9 @@ if __name__ == "__main__":
 
         boosted_emotions.append((label, boosted_proba))
 
-    # Sort boosted results
+
     boosted_emotions.sort(key=lambda x: x[1], reverse=True)
 
-    # Output
     print("\nPredicted Emotions (After Boost):")
     for emotion, probability in boosted_emotions[:5]:
         print(f"Ensemble Emotion: {emotion}, Boosted Probability: {probability:.4f}")

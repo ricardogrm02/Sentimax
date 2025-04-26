@@ -23,17 +23,24 @@ label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
 def train_ensemble():
+    # Load the text dataset
     file_path = 'train_text_data.csv'
     data = pd.read_csv(file_path)
     
+    # Initialize a vectorizer with emoji-friendly tokenization
     vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
+
+    # Vectorize the 'content' column
     X = vectorizer.fit_transform(data['content'])
 
+    # Encode sentiment labels
     le = LabelEncoder()
     y = le.fit_transform(data['sentiment'])
 
+    # Split the dataset into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+    # Initialize models with hyperparameters
     MNB_Model = MultinomialNB()
     LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
     C_Model = ComplementNB()
@@ -43,6 +50,7 @@ def train_ensemble():
     SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
     SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
 
+    # Create an ensemble model
     ensemble_model = VotingClassifier(
         estimators=[
             ('nb', MNB_Model),
@@ -57,11 +65,14 @@ def train_ensemble():
         voting='soft'
     )
     
+    # Train the ensemble model
     ensemble_model.fit(X_train, y_train)
 
+    # Evaluate the model
     y_pred = ensemble_model.predict(X_test)
     print(classification_report(y_test, y_pred, target_names=le.classes_))
 
+    # Save the trained model, vectorizer, and label encoder
     joblib.dump(ensemble_model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
     joblib.dump(le, label_encoder_path)
@@ -77,14 +88,17 @@ def read_image(userInput):
     return concatenated_text
 
 if __name__ == "__main__":
+    # Check if model, vectorizer, and label encoder are already saved
     if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
         user_choice = input("Model, vectorizer, and label encoder already exist. Do you want to:\n1) Use the existing model\n2) Delete and create a new model\nEnter your choice (1 or 2): ")
         if user_choice == '1':
+            # Load the existing model, vectorizer, and label encoder
             ensemble_model = joblib.load(model_path)
             vectorizer = joblib.load(vectorizer_path)
             le = joblib.load(label_encoder_path)
             print("Existing model, vectorizer, and label encoder loaded successfully.")
         elif user_choice == '2':
+            # Delete existing model and train a new one
             os.remove(model_path)
             os.remove(vectorizer_path)
             os.remove(label_encoder_path)
@@ -94,6 +108,7 @@ if __name__ == "__main__":
             print("Invalid choice. Exiting.")
             exit()
     else:
+        # Train and save the model if it doesn't exist
         ensemble_model, vectorizer, le = train_ensemble()
 
     mode = int(input("Please Select a method:\n1) Insert Text\n2) Insert Image\nEnter your choice: "))
@@ -102,10 +117,16 @@ if __name__ == "__main__":
     elif mode == 2:
         userInput = read_image(input("What is the name of the image file: "))
 
+    # Transform the new input using the loaded vectorizer
     new_text_transformed = vectorizer.transform([userInput])
+
+    # Predict sentiment probabilities with the ensemble model
     ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
+
+    # Retrieve the class labels (decode them)
     ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
 
+    # DL booster function
     polarity_boosts = get_polarity_boost(userInput)
     positive_emotions = {"joy", "happiness", "relief", "fun", "love", "surprise", "enthusiasm"}
     neutral_emotions = {"neutral", "empty"}
