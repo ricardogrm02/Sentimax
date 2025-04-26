@@ -14,6 +14,7 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.linear_model import SGDClassifier
+from DL_text_modifier import get_polarity_boost
 
 # Define paths to save the model, vectorizer, and label encoder
 model_path = 'ML_text_ensemble_model.pkl'
@@ -22,21 +23,17 @@ label_encoder_path = 'label_encoder.pkl'
 
 # Function to train and save the model
 def train_ensemble():
-    # file_path = 'new_balanced_data.csv'
     file_path = 'text_train_data.csv'
     data = pd.read_csv(file_path)
     
-    # Increase max_features to capture more text features
     vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
     X = vectorizer.fit_transform(data['content'])
 
-    # Encode labels
     le = LabelEncoder()
     y = le.fit_transform(data['sentiment'])
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize models with adjusted hyperparameters
     MNB_Model = MultinomialNB()
     LR_Model = LogisticRegression(solver='saga', class_weight='balanced', max_iter=1000)
     C_Model = ComplementNB()
@@ -46,7 +43,6 @@ def train_ensemble():
     SVM_Model = SVC(kernel='linear', probability=True, class_weight='balanced', random_state=42)
     SGDC_Model = SGDClassifier(loss='log_loss', max_iter=1000, tol=1e-3, class_weight='balanced', random_state=42)
 
-    # Create ensemble model
     ensemble_model = VotingClassifier(
         estimators=[
             ('nb', MNB_Model),
@@ -61,13 +57,11 @@ def train_ensemble():
         voting='soft'
     )
     
-    # Train the ensemble model on resampled data
     ensemble_model.fit(X_train, y_train)
 
     y_pred = ensemble_model.predict(X_test)
     print(classification_report(y_test, y_pred, target_names=le.classes_))
 
-    # Save the trained model, vectorizer, and label encoder
     joblib.dump(ensemble_model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
     joblib.dump(le, label_encoder_path)
@@ -83,17 +77,14 @@ def read_image(userInput):
     return concatenated_text
 
 if __name__ == "__main__":
-    # Check if model, vectorizer, and label encoder are already saved
     if os.path.exists(model_path) and os.path.exists(vectorizer_path) and os.path.exists(label_encoder_path):
         user_choice = input("Model, vectorizer, and label encoder already exist. Do you want to:\n1) Use the existing model\n2) Delete and create a new model\nEnter your choice (1 or 2): ")
         if user_choice == '1':
-            # Load the existing model, vectorizer, and label encoder
             ensemble_model = joblib.load(model_path)
             vectorizer = joblib.load(vectorizer_path)
             le = joblib.load(label_encoder_path)
             print("Existing model, vectorizer, and label encoder loaded successfully.")
         elif user_choice == '2':
-            # Delete existing model and train a new one
             os.remove(model_path)
             os.remove(vectorizer_path)
             os.remove(label_encoder_path)
@@ -103,7 +94,6 @@ if __name__ == "__main__":
             print("Invalid choice. Exiting.")
             exit()
     else:
-        # Train and save the model if it doesn't exist
         ensemble_model, vectorizer, le = train_ensemble()
 
     mode = int(input("Please Select a method:\n1) Insert Text\n2) Insert Image\nEnter your choice: "))
@@ -112,20 +102,29 @@ if __name__ == "__main__":
     elif mode == 2:
         userInput = read_image(input("What is the name of the image file: "))
 
-    # Transform the new input using the loaded vectorizer
     new_text_transformed = vectorizer.transform([userInput])
-
-    # Predict sentiment probabilities with the ensemble model
     ensemble_proba = ensemble_model.predict_proba(new_text_transformed)
-
-    # Retrieve the class labels (decode them)
     ensemble_classes = le.inverse_transform(np.arange(len(ensemble_model.classes_)))
 
-    # Get top 5 predicted emotions from the ensemble
-    top_5_indices = np.argsort(ensemble_proba[0])[::-1]
-    top_5_emotions = [(ensemble_classes[index], ensemble_proba[0][index]) for index in top_5_indices]
+    polarity_boosts = get_polarity_boost(userInput)
+    positive_emotions = {"joy", "happiness", "relief", "fun", "love", "surprise", "enthusiasm"}
+    neutral_emotions = {"neutral", "empty"}
+    negative_emotions = {"anger", "fear", "sadness", "shame", "disgust", "boredom", "hate", "worry", "disappointment"}
 
-    # Output emotions
-    print("\nPredicted Emotions:")
+    adjusted_proba = []
+    for idx, emotion in enumerate(ensemble_classes):
+        boost = 1.0
+        if emotion in positive_emotions:
+            boost = polarity_boosts.get("positive", 1.0)
+        elif emotion in neutral_emotions:
+            boost = polarity_boosts.get("neutral", 1.0)
+        elif emotion in negative_emotions:
+            boost = polarity_boosts.get("negative", 1.0)
+        adjusted_proba.append((emotion, ensemble_proba[0][idx] * boost))
+
+    adjusted_proba.sort(key=lambda x: x[1], reverse=True)
+    top_5_emotions = adjusted_proba[:5]
+
+    print("\nPredicted Emotions (Boosted):")
     for emotion, probability in top_5_emotions:
         print(f"Ensemble Emotion: {emotion}, Probability: {probability:.4f}")
