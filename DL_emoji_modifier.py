@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pickle
 
-# Sentiment groupings for emoji
+# Sentiment groupings
 positive = {"joy", "happiness", "relief", "fun", "love", "surprise", "enthusiasm"}
 neutral = {"neutral", "empty"}
 negative = {"anger", "fear", "sadness", "shame", "disgust", "boredom", "hate", "worry", "disappointment"}
@@ -35,7 +35,7 @@ if os.path.exists(model_path) and os.path.exists(tokenizer_path) and os.path.exi
         label_encoder = pickle.load(f)
 else:
     print("Training new DL emoji model...")
-    # Prepare emoji data
+    # Prepare data
     df = pd.read_csv("train_emoji_data.csv")
 
     def map_to_polarity(label):
@@ -93,7 +93,7 @@ def get_polarity_boost(text):
     preds = model.predict(padded, verbose=0)[0]
     return {label_encoder.classes_[i]: 1 + preds[i] for i in range(len(preds))}
 
-# Optional standalone usage
+# Standalone usage testing
 if __name__ == "__main__":
     user_text = input("Enter emoji text to analyze polarity: ")
     boost_factors = get_polarity_boost(user_text)

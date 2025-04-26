@@ -93,7 +93,7 @@ def get_polarity_boost(text):
     preds = model.predict(padded, verbose=0)[0]
     return {label_encoder.classes_[i]: 1 + preds[i] for i in range(len(preds))}
 
-# Optional standalone usage
+# Standalone usage testimg
 if __name__ == "__main__":
     user_text = input("Enter text to analyze sentiment polarity: ")
     boost_factors = get_polarity_boost(user_text)
